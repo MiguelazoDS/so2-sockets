@@ -16,26 +16,68 @@ char *fgets(char *str, int n, FILE *stream);
 /*Función que produce una demora de tiempo especificada por parámetro.*/
 void sleep(int);
 
+/*Función que verifica que el usuario y contraseña sea correcto*/
+void validar(int *correcto, char *usuario, char *password, char *ip, int *puerto){
+	char *comando;
+	char *nombre;
+	char *palabras;
+	int i=0;
+	int j;
+
+	/*Divide el comando usando como separadores un "espacio", "@" y ":" y guarda esas divisiones en comando, nombre, ip y puerto*/
+	palabras = strtok(usuario," @:");
+	comando = palabras;
+	while (palabras !=NULL) {
+		i++;
+		palabras = strtok (NULL, " @:");
+		if(i==1){nombre=palabras;}
+		if(i==2){
+			for (j = 0; j < strlen(palabras); j++) {
+				*(ip+j)=*(palabras+j);
+			}
+		}
+		if(i==3){*puerto=(atoi(palabras));}
+	}
+
+	/*Verifica que comando, nombre, y puerto sean correctos y si lo son modifica la variable entera pasada por referencia "correcto"*/
+	password[strlen(password)-1] = '\0';
+	if(!strcmp("connect",comando))
+		if(!strcmp("miguel",nombre))
+			if(*puerto==6020)
+				if(!strcmp("miguel",password))
+					*correcto=1;
+}
+
 int main( int argc, char *argv[] ) {
-	int sockfd, puerto, n;
+	int sockfd, n, puerto, correcto=0;
 	struct sockaddr_in serv_addr;
 	struct hostent *server;
 	int terminar = 0;
-
 	char buffer[TAM];
-	if ( argc < 3 ) {
-		fprintf( stderr, "Uso %s host puerto\n", argv[0]);
-		exit( 0 );
-	}
+	/*Los siguientes arreglos guardan la información que se ingresa para el login*/
+	char usuario[50];
+	char password[50];
+	char *ip=(char*)malloc(TAM*sizeof(char));
 
-	puerto = atoi( argv[2] );
+	printf("\nIngresar usuario con el formato: connect usuario@numero_ip:port"
+					"  con numero_ip a.b.c.d donde a,b,c,d son valores de 3 dígitos y port es de 4 dígitos");
+	/*Ciclo que dura hasta que el comando y la contraseña sean correctas*/
+	do {
+		printf("\nUsuario: ");
+		fgets(usuario,50,stdin);
+		printf("\nContraseña: ");
+		fgets(password,50,stdin);
+		validar(&correcto, usuario, password, ip, &puerto);
+		if(!correcto) printf("\nnombre de usuario y/o contraseña incorrecto\n");
+	} while(!correcto);
+
 	sockfd = socket( AF_INET, SOCK_STREAM, 0 );
 	if ( sockfd < 0 ) {
 		perror( "ERROR apertura de socket" );
 		exit( 1 );
 	}
 
-	server = gethostbyname( argv[1] );
+	server = gethostbyname(ip);
 	if (server == NULL) {
 		fprintf( stderr,"Error, no existe el host\n" );
 		exit( 0 );
@@ -43,7 +85,7 @@ int main( int argc, char *argv[] ) {
 	memset( (char *) &serv_addr, '0', sizeof(serv_addr) );
 	serv_addr.sin_family = AF_INET;
 	bcopy( (char *)server->h_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length );
-	serv_addr.sin_port = htons( puerto );
+	serv_addr.sin_port = htons( puerto);
 	if ( connect( sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr ) ) < 0 ) {
 		perror( "conexion" );
 		exit( 1 );
