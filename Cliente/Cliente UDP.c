@@ -4,11 +4,18 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <netdb.h> 
+#include <netdb.h>
 #define TAM 256
 
+/*Función utilizada para leer información recibida.*/
+ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags, struct sockaddr *src_addr, socklen_t *addrlen);
+/*Función utilizada para mandar información por socket.*/
+ssize_t sendto(int sockfd, const void *buf, size_t len, int flags, const struct sockaddr *dest_addr, socklen_t addrlen);
+
+
 int main( int argc, char *argv[] ) {
-	int sockfd, puerto, n, tamano_direccion;
+	int sockfd, puerto, n;
+	socklen_t tamano_direccion;
 	struct sockaddr_in dest_addr;
 	struct hostent *server;
 
@@ -32,7 +39,7 @@ int main( int argc, char *argv[] ) {
 	}
 
 	dest_addr.sin_family = AF_INET;
-	dest_addr.sin_port = htons( atoi( argv[2] ) );
+	dest_addr.sin_port = htons( puerto );
 	dest_addr.sin_addr = *( (struct in_addr *)server->h_addr );
 	memset( &(dest_addr.sin_zero), '\0', 8 );
 
@@ -54,4 +61,4 @@ int main( int argc, char *argv[] ) {
 	}
 	printf( "Respuesta: %s\n", buffer );
 	return 0;
-} 
+}

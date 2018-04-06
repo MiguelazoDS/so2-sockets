@@ -4,8 +4,17 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <netdb.h> 
+#include <netdb.h>
 #define TAM 256
+
+/*Función utilizada para mandar información por socket.*/
+ssize_t write (int fd, const void *buf, size_t count);
+/*Función utilizada para leer información recibida.*/
+ssize_t read(int fd, void *buf, size_t count);
+/*Función que recibe una línea desde un archivo.*/
+char *fgets(char *str, int n, FILE *stream);
+/*Función que produce una demora de tiempo especificada por parámetro.*/
+void sleep(int);
 
 int main( int argc, char *argv[] ) {
 	int sockfd, puerto, n;
@@ -51,7 +60,7 @@ int main( int argc, char *argv[] ) {
 			exit( 1 );
 		}
 
-		// Verificando si se escribió: fin
+		/*Verificando si se escribió: fin*/
 		buffer[strlen(buffer)-1] = '\0';
 		if( !strcmp( "fin", buffer ) ) {
 			terminar = 1;
@@ -70,4 +79,4 @@ int main( int argc, char *argv[] ) {
 		}
 	}
 	return 0;
-} 
+}

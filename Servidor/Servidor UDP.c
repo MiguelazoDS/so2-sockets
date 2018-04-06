@@ -1,13 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h> 
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #define TAM 256
 
+/*Función utilizada para leer información recibida.*/
+ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags, struct sockaddr *src_addr, socklen_t *addrlen);
+/*Función utilizada para mandar información por socket.*/
+ssize_t sendto(int sockfd, const void *buf, size_t len, int flags, const struct sockaddr *dest_addr, socklen_t addrlen);
+
 int main( int argc, char *argv[] ) {
-	int sockfd, puerto, tamano_direccion;
+	int sockfd, puerto;
+	socklen_t tamano_direccion;
 	char buffer[ TAM ];
 	struct sockaddr_in serv_addr;
 	int n;
@@ -18,7 +24,7 @@ int main( int argc, char *argv[] ) {
 	}
 
 	sockfd = socket( AF_INET, SOCK_DGRAM, 0 );
-	if (sockfd < 0) { 
+	if (sockfd < 0) {
 		perror("ERROR en apertura de socket");
 		exit( 1 );
 	}
@@ -53,5 +59,5 @@ int main( int argc, char *argv[] ) {
 			exit( 1 );
 		}
 	}
-	return 0; 
-} 
+	return 0;
+}
