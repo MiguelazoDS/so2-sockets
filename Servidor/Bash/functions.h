@@ -207,8 +207,8 @@ void lsh_loop(void)
   char **args;
   int status;
   char buffer[directorio_actual];
-  getcwd(buffer, directorio_actual);
   do {
+    getcwd(buffer, directorio_actual);
     printf("%s> ",buffer);
     line = lsh_read_line();
     args = lsh_split_line(line);
