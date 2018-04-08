@@ -18,16 +18,11 @@ pid_t getpid(void);
 void close(int newsockfd);
 
 int main( int argc, char *argv[] ) {
-	int sockfd, newsockfd, puerto, pid;
+	int sockfd, newsockfd, pid, puerto=6020;
 	socklen_t clilen;
 	char buffer[TAM];
 	struct sockaddr_in serv_addr, cli_addr;
 	int n;
-
-	if ( argc < 2 ) {
-        	fprintf( stderr, "Uso: %s <puerto>\n", argv[0] );
-		exit( 1 );
-	}
 
 	sockfd = socket( AF_INET, SOCK_STREAM, 0);
 	if ( sockfd < 0 ) {
@@ -36,7 +31,6 @@ int main( int argc, char *argv[] ) {
 	}
 
 	memset( (char *) &serv_addr, 0, sizeof(serv_addr) );
-	puerto = atoi( argv[1] );
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_addr.s_addr = INADDR_ANY;
 	serv_addr.sin_port = htons( puerto );
