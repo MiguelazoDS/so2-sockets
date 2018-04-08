@@ -2,6 +2,7 @@
 #define LSH_TOK_BUFSIZE 64
 #define LSH_TOK_DELIM " \t\r\n\a"
 #define directorio_actual 500
+#define BUFFSIZE 256
 
 /*
   List of builtin commands, followed by their corresponding functions.
@@ -198,6 +199,103 @@ char **lsh_split_line(char *line)
   return tokens;
 }
 
+void imprimirHOSTNAME(){
+		FILE *f1;
+		char buffer1[BUFFSIZE+1];
+		f1=fopen("/proc/sys/kernel/hostname","r");
+		fgets(buffer1, BUFFSIZE+1, f1);
+    buffer1[strlen(buffer1)-1] = '\0';
+		printf("%s",buffer1);
+		fclose(f1);
+}
+
+void imprimirFECHAYHORA(){
+		FILE *f;
+		char buffer[BUFFSIZE+1];
+		int hora, min, seg, ano, mes, dia;
+		f=fopen("/proc/driver/rtc","r");
+		fgets(buffer, BUFFSIZE+1, f);
+		sscanf(buffer, "%*s       %*c %d%*c%d%*c%d",&hora,&min,&seg);
+		fgets(buffer, BUFFSIZE+1, f);
+		sscanf(buffer, "%*s       %*c %d%*c%d%*c%d",&ano,&mes,&dia);
+
+		printf("              Hora: %d:%d:%d", hora, min, seg);
+		printf("              Fecha: %d/%d/%d\n", dia, mes, ano);
+
+		fclose(f);
+}
+
+void imprimirCPU(){
+		FILE *f;
+		char buffer[BUFFSIZE+1];
+    printf("\n          >Procesador: \n");
+		f = fopen("/proc/cpuinfo","r");
+		fgets(buffer, BUFFSIZE+1, f);
+		fgets(buffer, BUFFSIZE+1, f);
+		fgets(buffer, BUFFSIZE+1, f);
+		fgets(buffer, BUFFSIZE+1, f);
+		fgets(buffer, BUFFSIZE+1, f);
+		printf("              %s",buffer);
+		fclose(f);
+}
+
+void imprimirUptime(){
+		FILE *f;
+		char buffer[BUFFSIZE+1];
+		int a=1;
+		int i=0;
+		int cantidad=0;
+		double punto=0;
+    double aux=0;
+    int horas;
+    int minutos;
+    double segundos;
+    f = fopen("/proc/uptime","r");
+    fgets(buffer, BUFFSIZE+1, f);
+		while(a==1)
+		{
+		if(buffer[i]==46)
+			punto=i;
+
+		else if(buffer[i]==32)
+			{
+				cantidad=i;
+				a=-1;
+			}
+			i++;
+		}
+		i=0;
+		aux=0;
+
+		while(i<cantidad)
+		{
+			if(buffer[i]!=46 && punto>0)
+				aux+=(buffer[i]-48)*pow(10.0,punto-1);
+			if(buffer[i]!=46 && punto<0)
+				aux+=(buffer[i]-48)*pow(10.0,punto);
+			punto--;
+			i++;
+		}
+		horas=aux/3600;
+		minutos=(aux-horas*3600)/60;
+		segundos=(aux-horas*3600-minutos*60);
+
+		printf("          Uptime-HH/MM/SS-: %d:%d:%.2f\n",horas, minutos, segundos);
+		fclose(f);
+}
+
+void imprimirEncabezado(){
+    printf("\n          +-------------------Inicio del programa Bash--------------------------+\n");
+		printf("\n          >Fecha y Hora actual: \n");
+		imprimirFECHAYHORA();
+    printf("\n          +- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -+\n");
+    printf("\n          >Uptime: ");
+    imprimirUptime();
+    printf("\n          +- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -+\n");
+    imprimirCPU();
+    printf("\n          +- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -+\n\n\n");
+}
+
 /**
    @brief Loop getting input and executing it.
  */
@@ -207,9 +305,11 @@ void lsh_loop(void)
   char **args;
   int status;
   char buffer[directorio_actual];
+  imprimirEncabezado();
   do {
     getcwd(buffer, directorio_actual);
-    printf("%s> ",buffer);
+    imprimirHOSTNAME();
+    printf("~%s => ",buffer);
     line = lsh_read_line();
     args = lsh_split_line(line);
     status = lsh_execute(args);

@@ -14,7 +14,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "functions.h"
+#include <math.h>
+#include "funciones.h"
 
 /**
    @brief Main entry point.
