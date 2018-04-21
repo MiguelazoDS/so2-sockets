@@ -98,7 +98,8 @@ void ingresar_comando(char **cmd_name_pass, char **ip, int *puerto){
 
 /**Función que escribe un mensaje y lo envía al cliente
 Función llamada reiteradas veces por otras funciones que desean enviar datos*/
-void escribir_mensaje(int sockfd, int n, char *cadena){
+void escribir_mensaje(int sockfd, char *cadena){
+	int n;
 	/*Llamada al sistema para enviar datos.*/
 	n = write(sockfd, cadena, strlen(cadena));
 	if ( n < 0 ) {
@@ -109,7 +110,8 @@ void escribir_mensaje(int sockfd, int n, char *cadena){
 
 /**Función que lee un mensaje.
 Función llamada reiteradas veces por otras funciones que desean leer datos*/
-void leer_mensaje(int sockfd, int n, char *cadena){
+void leer_mensaje(int sockfd, char *cadena){
+	int n;
 	/*Llamada al sistema para enviar datos.*/
 	n = read( sockfd, cadena, TAM );
 	if ( n < 0 ) {
@@ -119,7 +121,7 @@ void leer_mensaje(int sockfd, int n, char *cadena){
 }
 
 int main( int argc, char *argv[] ) {
-	int sockfd, n, puerto;
+	int sockfd, puerto;
 	struct sockaddr_in serv_addr;
 	struct hostent *server;
 	int terminar = 0;
@@ -152,21 +154,20 @@ int main( int argc, char *argv[] ) {
 	}
 
 	while(1) {
-		escribir_mensaje(sockfd,n,cmd_name_pass);
-		memset( buffer, '\0', TAM );
-		leer_mensaje(sockfd,n,buffer);
+		escribir_mensaje(sockfd,cmd_name_pass);
+		/*memset( buffer, '\0', TAM );
+		leer_mensaje(sockfd,n,buffer);*/
 		printf( "\n\nmiguel@%s:%d:",ip,puerto);
-
-		printf( "Ingrese el mensaje a transmitir: ");
+		/*printf( "Ingrese el mensaje a transmitir: ");
 		memset( buffer, '\0', TAM );
-		fgets( buffer, TAM-1, stdin );
+		fgets( buffer, TAM-1, stdin );*/
 
 		/*n = write( sockfd, buffer, strlen(buffer) );
 		if ( n < 0 ) {
 			perror( "escritura de socket" );
 			exit( 1 );
 		}*/
-		escribir_mensaje(sockfd,n,buffer);
+		/*escribir_mensaje(sockfd,n,buffer);*/
 
 		/*Verificando si se escribió: fin*/
 		buffer[strlen(buffer)-1] = '\0';
@@ -175,12 +176,13 @@ int main( int argc, char *argv[] ) {
 		}
 
 		memset( buffer, '\0', TAM );
-		n = read( sockfd, buffer, TAM );
+		leer_mensaje(sockfd, buffer);
+		/*n = read( sockfd, buffer, TAM );
 		if ( n < 0 ) {
 			perror( "lectura de socket" );
 			exit( 1 );
-		}
-		printf( "Respuesta: %s\n", buffer );
+		}*/
+		printf( "Respuesta: %s\n", buffer);
 		if( terminar ) {
 			printf( "Finalizando ejecución\n" );
 			exit(0);

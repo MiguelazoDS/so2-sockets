@@ -35,19 +35,42 @@ int verificar(char *buffer){
 	password[strlen(password)-1]='\0';
 	if(!strcmp(comando,"connect") && !strcmp(nombre,"miguel") && !strcmp(password,"root")){
 		printf("El usuario es correcto\n");
+		return 1;
 	}
 	printf("Mensaje recibido desde el cliente: c: %s n: %s p: %s\n", comando, nombre, password);
 	printf("Longitudes: c: %d n: %d p: %d\n", (int)strlen(comando), (int)strlen(nombre), (int)strlen(password));
-
 	return 0;
 }
 
+/**Función que escribe un mensaje y lo envía al cliente
+Función llamada reiteradas veces por otras funciones que desean enviar datos*/
+void escribir_mensaje(int sockfd, char *cadena){
+int n;
+	/*Llamada al sistema para enviar datos.*/
+	n = write(sockfd, cadena, strlen(cadena));
+	if ( n < 0 ) {
+		perror( "escritura en socket" );
+		exit( 1 );
+	}
+}
+
+/**Función que lee un mensaje.
+Función llamada reiteradas veces por otras funciones que desean leer datos*/
+void leer_mensaje(int sockfd,  char *cadena){
+	int n;
+	/*Llamada al sistema para enviar datos.*/
+	n = read( sockfd, cadena, TAM );
+	if ( n < 0 ) {
+		perror( "lectura de socket" );
+		exit( 1 );
+	}
+}
+
 int main( int argc, char *argv[] ) {
-	int sockfd, newsockfd, pid, puerto=6020;
+	int sockfd, newsockfd, pid, puerto=6020, validation;
 	socklen_t clilen;
 	char buffer[TAM];
 	struct sockaddr_in serv_addr, cli_addr;
-	int n;
 
 	sockfd = socket( AF_INET, SOCK_STREAM, 0);
 	if ( sockfd < 0 ) {
@@ -89,20 +112,26 @@ int main( int argc, char *argv[] ) {
 			while ( 1 ) {
 				memset( buffer, 0, TAM );
 
-				n = read( newsockfd, buffer, TAM-1 );
+				leer_mensaje(newsockfd, buffer);
+/*				n = read( newsockfd, buffer, TAM-1 );
 				if ( n < 0 ) {
 					perror( "lectura de socket" );
 					exit(1);
-				}
-				verificar(buffer);
+				}*/
 				printf( "PROCESO %d. ", getpid() );
 				printf( "Recibí: %s", buffer );
-
-				n = write( newsockfd, "Obtuve su mensaje", 18 );
+				validation=verificar(buffer);
+				if (validation==1) {
+					escribir_mensaje(newsockfd, "Correcto");
+				}
+				else{
+					escribir_mensaje(newsockfd, "Incorrecto");
+				}
+/*		n = write( newsockfd, "Obtuve su mensaje", 18 );
 				if ( n < 0 ) {
 					perror( "escritura en socket" );
 					exit( 1 );
-				}
+				}*/
 				/*Verificación de si hay que terminar*/
 				buffer[strlen(buffer)-1] = '\0';
 				if( !strcmp( "fin", buffer ) ) {
