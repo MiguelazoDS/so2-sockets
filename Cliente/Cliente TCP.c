@@ -18,12 +18,13 @@ void sleep(int);
 
 /*Función que verifica que el usuario y contraseña sea correcto*/
 void validar(int *correcto, char *usuario, char *password, char *ip, int *puerto){
+	char **aux=NULL;
 	char *comando;
 	char *nombre;
 	char *palabras;
 	int i=0;
 	int j;
-
+	*aux=usuario;
 	/*Divide el comando usando como separadores un "espacio", "@" y ":" y guarda esas divisiones en comando, nombre, ip y puerto*/
 	palabras = strtok(usuario," @:");
 	comando = palabras;
@@ -33,7 +34,7 @@ void validar(int *correcto, char *usuario, char *password, char *ip, int *puerto
 		if(i==1){nombre=palabras;}
 		if(i==2){
 			for (j = 0; j < strlen(palabras); j++) {
-				*(ip+j)=*(palabras+j);
+				/**(ip+j)=*(palabras+j);*/
 			}
 		}
 		if(i==3){*puerto=(atoi(palabras));}
@@ -46,31 +47,88 @@ void validar(int *correcto, char *usuario, char *password, char *ip, int *puerto
 			if(*puerto==6020)
 				if(!strcmp("miguel",password))
 					*correcto=1;
+
+	usuario=*aux;
+}
+
+void ingresar_comando(char **cmd_name_pass, char **ip, int *puerto){
+	/*int correcto=1;*/
+	char login[50];
+	char password[50];
+	char *palabras;
+	char *comando;
+	char *nombre;
+	int j, i=0;
+	*cmd_name_pass="hola";
+	/**ip="192.168.0.7";*/
+
+	*puerto=6020;
+	printf("\nIngresar usuario con el formato: connect usuario@numero_ip:port"
+					"  con numero_ip a.b.c.d y port de 4 dígitos");
+	/*Ciclo que dura hasta que el comando y la contraseña sean correctas*/
+	/*do {*/
+	printf("\nUsuario: ");
+	fgets(login,50,stdin);
+	printf("\nContraseña: ");
+	fgets(password,50,stdin);
+
+	palabras = strtok(login, " @:");
+	comando = palabras;
+	while (palabras !=NULL) {
+		i++;
+		palabras = strtok (NULL, " @:");
+		if(i==1){nombre=palabras;}
+		if(i==2){
+			for (j = 0; j < strlen(palabras); j++) {
+				/**(ip+j)=*(palabras+j);*/
+				/**ip[j] = palabras[0];*/
+				(*ip)[j] = palabras[j];
+				printf("%c %c\n", (*ip)[j], palabras[j]);
+
+			}
+		}
+		if(i==3){*puerto=(atoi(palabras));}
+	}
+	printf("%s %s %s %d", nombre, comando, *ip, *puerto);
+		/*validar(cmd_name_pass, comando, password, ip, puerto);*/
+		/*if(!correcto) printf("\nnombre de usuario y/o contraseña incorrecto\n");*/
+	/*} while(!correcto);*/
+}
+
+/**Función que escribe un mensaje y lo envía al cliente
+Función llamada reiteradas veces por otras funciones que desean enviar datos*/
+void escribir_mensaje(int sockfd, int n, char *cadena){
+	/*Llamada al sistema para enviar datos.*/
+	n = write(sockfd, cadena, strlen(cadena));
+	if ( n < 0 ) {
+		perror( "escritura en socket" );
+		exit( 1 );
+	}
+}
+
+/**Función que lee un mensaje.
+Función llamada reiteradas veces por otras funciones que desean leer datos*/
+void leer_mensaje(int sockfd, int n, char *cadena){
+	/*Llamada al sistema para enviar datos.*/
+	n = read( sockfd, cadena, TAM );
+	if ( n < 0 ) {
+		perror( "lectura de socket" );
+		exit( 1 );
+	}
 }
 
 int main( int argc, char *argv[] ) {
-	int sockfd, n, puerto, correcto=0;
+	int sockfd, n, puerto;
 	struct sockaddr_in serv_addr;
 	struct hostent *server;
 	int terminar = 0;
 	char buffer[TAM];
-	/*Los siguientes arreglos guardan la información que se ingresa para el login*/
-	char usuario[50];
-	char password[50];
 	char *ip=(char*)malloc(TAM*sizeof(char));
+	char *cmd_name_pass=(char*)malloc(TAM*sizeof(char));
 
-	printf("\nIngresar usuario con el formato: connect usuario@numero_ip:port"
-					"  con numero_ip a.b.c.d donde a,b,c,d son valores de 3 dígitos y port es de 4 dígitos");
-	/*Ciclo que dura hasta que el comando y la contraseña sean correctas*/
-	do {
-		printf("\nUsuario: ");
-		fgets(usuario,50,stdin);
-		printf("\nContraseña: ");
-		fgets(password,50,stdin);
-		validar(&correcto, usuario, password, ip, &puerto);
-		if(!correcto) printf("\nnombre de usuario y/o contraseña incorrecto\n");
-	} while(!correcto);
-
+	ingresar_comando(&cmd_name_pass, &ip, &puerto);
+	printf("cmd_name_pass: %s ip: %s puerto: %d\n", cmd_name_pass, ip, puerto);
+	printf("IP: %s\n", ip);
 	sockfd = socket( AF_INET, SOCK_STREAM, 0 );
 	if ( sockfd < 0 ) {
 		perror( "ERROR apertura de socket" );
@@ -94,15 +152,17 @@ int main( int argc, char *argv[] ) {
 	while(1) {
 		printf( "\n\nmiguel@%s:%d:",ip,puerto);
 
-		printf( "Ingrese el mensaje a transmitir: " );
+		printf( "Ingrese el mensaje a transmitir: ");
 		memset( buffer, '\0', TAM );
 		fgets( buffer, TAM-1, stdin );
 
-		n = write( sockfd, buffer, strlen(buffer) );
+		/*n = write( sockfd, buffer, strlen(buffer) );
 		if ( n < 0 ) {
 			perror( "escritura de socket" );
 			exit( 1 );
-		}
+		}*/
+		escribir_mensaje(sockfd,n,cmd_name_pass);
+		escribir_mensaje(sockfd,n,buffer);
 
 		/*Verificando si se escribió: fin*/
 		buffer[strlen(buffer)-1] = '\0';

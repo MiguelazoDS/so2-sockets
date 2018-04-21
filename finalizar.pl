@@ -2,8 +2,8 @@
 
 $a=`pidof \"Cliente TCP\"`;
 $b=`pidof \"Cliente UDP\"`;
-$c=`pidof \"Servidor_TCP\"`;
-$d=`pidof \"Servidor_UDP\"`;
+$c=`pidof \"Servidor TCP\"`;
+$d=`pidof \"Servidor UDP\"`;
 
 sub finalizar{
   foreach my $x (@_) {
