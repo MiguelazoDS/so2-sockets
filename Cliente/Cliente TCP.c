@@ -59,7 +59,7 @@ void ingresar_comando(char **cmd_name_pass, char **ip, int *puerto){
 	char *comando;
 	char *nombre;
 	int j, i=0;
-	*cmd_name_pass="hola";
+	/**cmd_name_pass="hola";*/
 	/**ip="192.168.0.7";*/
 
 	*puerto=6020;
@@ -90,6 +90,7 @@ void ingresar_comando(char **cmd_name_pass, char **ip, int *puerto){
 		if(i==3){*puerto=(atoi(palabras));}
 	}
 	printf("%s %s %s %d", nombre, comando, *ip, *puerto);
+	strcat(strcat(strcat(strcat(strcat(*cmd_name_pass,comando),"@"),nombre),"@"),password);
 		/*validar(cmd_name_pass, comando, password, ip, puerto);*/
 		/*if(!correcto) printf("\nnombre de usuario y/o contraseña incorrecto\n");*/
 	/*} while(!correcto);*/
@@ -134,6 +135,7 @@ int main( int argc, char *argv[] ) {
 		perror( "ERROR apertura de socket" );
 		exit( 1 );
 	}
+	printf("mensaje a servidor: %s\n", cmd_name_pass);
 
 	server = gethostbyname(ip);
 	if (server == NULL) {

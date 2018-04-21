@@ -6,5 +6,5 @@ clean:
 	-rm -rf Servidor\ TCP
 	-rm -rf Servidor\ UDP
 	-rm -rf Bash/Bash
-#run:
-#	./Servidor\ TCP
+run:
+	./Servidor\ TCP

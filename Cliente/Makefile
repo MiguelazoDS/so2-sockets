@@ -4,5 +4,5 @@ make:
 clean:
 	-rm -rf Cliente\ TCP
 	-rm -rf Cliente\ UDP
-#run:
-#	./Cliente\ TCP
+run:
+	./Cliente\ TCP
