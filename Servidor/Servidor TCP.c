@@ -32,7 +32,7 @@ int verificar(char *buffer){
 		if(i==1){nombre=palabras;}
 		if(i==2){password=palabras;}
 	}
-
+	password[strlen(password)-1]='\0';
 	if(!strcmp(comando,"connect") && !strcmp(nombre,"miguel") && !strcmp(password,"root")){
 		printf("El usuario es correcto\n");
 	}
