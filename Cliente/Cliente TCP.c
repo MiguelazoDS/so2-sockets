@@ -152,6 +152,9 @@ int main( int argc, char *argv[] ) {
 	}
 
 	while(1) {
+		escribir_mensaje(sockfd,n,cmd_name_pass);
+		memset( buffer, '\0', TAM );
+		leer_mensaje(sockfd,n,buffer);
 		printf( "\n\nmiguel@%s:%d:",ip,puerto);
 
 		printf( "Ingrese el mensaje a transmitir: ");
@@ -163,7 +166,6 @@ int main( int argc, char *argv[] ) {
 			perror( "escritura de socket" );
 			exit( 1 );
 		}*/
-		escribir_mensaje(sockfd,n,cmd_name_pass);
 		escribir_mensaje(sockfd,n,buffer);
 
 		/*Verificando si se escribió: fin*/

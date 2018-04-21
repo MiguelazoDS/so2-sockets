@@ -17,6 +17,31 @@ pid_t getpid(void);
 /*Función que cierra un socket*/
 void close(int newsockfd);
 
+int verificar(char *buffer){
+	char *palabras;
+	char *comando;
+	char *nombre;
+	char *password;
+	int i=0;
+
+	palabras = strtok(buffer,"@");
+	comando=palabras;
+	while(palabras != NULL){
+		i++;
+		palabras = strtok (NULL, "@");
+		if(i==1){nombre=palabras;}
+		if(i==2){password=palabras;}
+	}
+
+	if(!strcmp(comando,"connect") && !strcmp(nombre,"miguel") && !strcmp(password,"root")){
+		printf("El usuario es correcto\n");
+	}
+	printf("Mensaje recibido desde el cliente: c: %s n: %s p: %s\n", comando, nombre, password);
+	printf("Longitudes: c: %d n: %d p: %d\n", (int)strlen(comando), (int)strlen(nombre), (int)strlen(password));
+
+	return 0;
+}
+
 int main( int argc, char *argv[] ) {
 	int sockfd, newsockfd, pid, puerto=6020;
 	socklen_t clilen;
@@ -69,7 +94,7 @@ int main( int argc, char *argv[] ) {
 					perror( "lectura de socket" );
 					exit(1);
 				}
-
+				verificar(buffer);
 				printf( "PROCESO %d. ", getpid() );
 				printf( "Recibí: %s", buffer );
 
