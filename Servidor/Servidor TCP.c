@@ -17,6 +17,8 @@ pid_t getpid(void);
 /*Función que cierra un socket*/
 void close(int newsockfd);
 
+/**Función que utiliza el mensaje con información de comando, usuario y contraseña del cliente
+y verifica que coincidan con los que tiene guardados.*/
 int verificar(char *buffer){
 	char *palabras;
 	char *comando;
@@ -34,11 +36,8 @@ int verificar(char *buffer){
 	}
 	password[strlen(password)-1]='\0';
 	if(!strcmp(comando,"connect") && !strcmp(nombre,"miguel") && !strcmp(password,"root")){
-		printf("El usuario es correcto\n");
 		return 1;
 	}
-	printf("Mensaje recibido desde el cliente: c: %s n: %s p: %s\n", comando, nombre, password);
-	printf("Longitudes: c: %d n: %d p: %d\n", (int)strlen(comando), (int)strlen(nombre), (int)strlen(password));
 	return 0;
 }
 
@@ -88,7 +87,7 @@ int main( int argc, char *argv[] ) {
 		exit( 1 );
 	}
 
-        printf( "Proceso: %d - socket disponible: %d\n", getpid(), ntohs(serv_addr.sin_port) );
+  printf( "Proceso: %d - socket disponible: %d\n", getpid(), ntohs(serv_addr.sin_port) );
 
 	listen( sockfd, 5 );
 	clilen = sizeof( cli_addr );
@@ -113,11 +112,6 @@ int main( int argc, char *argv[] ) {
 				memset( buffer, 0, TAM );
 
 				leer_mensaje(newsockfd, buffer);
-/*				n = read( newsockfd, buffer, TAM-1 );
-				if ( n < 0 ) {
-					perror( "lectura de socket" );
-					exit(1);
-				}*/
 				printf( "PROCESO %d. ", getpid() );
 				printf( "Recibí: %s", buffer );
 				validation=verificar(buffer);
@@ -127,11 +121,7 @@ int main( int argc, char *argv[] ) {
 				else{
 					escribir_mensaje(newsockfd, "Incorrecto");
 				}
-/*		n = write( newsockfd, "Obtuve su mensaje", 18 );
-				if ( n < 0 ) {
-					perror( "escritura en socket" );
-					exit( 1 );
-				}*/
+
 				/*Verificación de si hay que terminar*/
 				buffer[strlen(buffer)-1] = '\0';
 				if( !strcmp( "fin", buffer ) ) {
