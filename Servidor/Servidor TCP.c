@@ -66,7 +66,7 @@ void leer_mensaje(int sockfd,  char *cadena){
 }
 
 int main( int argc, char *argv[] ) {
-	int sockfd, newsockfd, pid, puerto=6020, validation, entrar=1;
+	int sockfd, newsockfd, pid, puerto=6020, validation;
 	socklen_t clilen;
 	char buffer[TAM];
 	struct sockaddr_in serv_addr, cli_addr;
@@ -110,26 +110,24 @@ int main( int argc, char *argv[] ) {
 
 			while ( 1 ) {
 				memset( buffer, 0, TAM );
+
 				leer_mensaje(newsockfd, buffer);
 				printf( "PROCESO %d. ", getpid() );
 				printf( "Recibí: %s", buffer );
-				if (entrar==1) {
-					validation=verificar(buffer);
-					if (validation==1) {
-						escribir_mensaje(newsockfd, "Acceso garantizado");
-						entrar=0;
-					}
-					else{
-						escribir_mensaje(newsockfd, "Comando, nombre y/o contraseña incorrecto");
-					}
+				validation=verificar(buffer);
+				if (validation==1) {
+					escribir_mensaje(newsockfd, "Correcto");
 				}
+				else{
+					escribir_mensaje(newsockfd, "Incorrecto");
+				}
+
 				/*Verificación de si hay que terminar*/
 				buffer[strlen(buffer)-1] = '\0';
 				if( !strcmp( "fin", buffer ) ) {
 					printf( "PROCESO %d. Como recibí 'fin', termino la ejecución.\n\n", getpid() );
 					exit(0);
 				}
-				escribir_mensaje(newsockfd,"Mensaje recibido");
 			}
 		}
 		else {

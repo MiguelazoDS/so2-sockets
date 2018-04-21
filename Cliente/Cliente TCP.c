@@ -75,7 +75,7 @@ void leer_mensaje(int sockfd, char *cadena){
 }
 
 int main( int argc, char *argv[] ) {
-	int sockfd, puerto,validation=0;
+	int sockfd, puerto;
 	struct sockaddr_in serv_addr;
 	struct hostent *server;
 	int terminar = 0;
@@ -106,17 +106,13 @@ int main( int argc, char *argv[] ) {
 	}
 
 	while(1) {
+		escribir_mensaje(sockfd,cmd_name_pass);
+		printf( "\n\nmiguel@%s:%d:",ip,puerto);
 
-		if (validation==0) {
-			escribir_mensaje(sockfd,cmd_name_pass);
-		}
-		if (validation==1) {
-			printf( "\n\nmiguel@%s:%d:",ip,puerto);
-			printf( "Ingrese el mensaje a transmitir: ");
-			memset( buffer, '\0', TAM );
-			fgets( buffer, TAM-1, stdin );
-			escribir_mensaje(sockfd,buffer);
-		}
+		/*printf( "Ingrese el mensaje a transmitir: ");
+		memset( buffer, '\0', TAM );
+		fgets( buffer, TAM-1, stdin );*/
+		/*escribir_mensaje(sockfd,n,buffer);*/
 
 		/*Verificando si se escribió: fin*/
 		buffer[strlen(buffer)-1] = '\0';
@@ -126,14 +122,6 @@ int main( int argc, char *argv[] ) {
 
 		memset( buffer, '\0', TAM );
 		leer_mensaje(sockfd, buffer);
-		if (!strcmp( "Acceso garantizado", buffer )) {
-			printf("Correcto!!!!\n");
-			validation=1;
-		}
-		if(!strcmp( "Comando, nombre y/o contraseña incorrecto", buffer )){
-			escribir_mensaje(sockfd,"fin");
-			terminar=1;
-		}
 		printf( "Respuesta: %s\n", buffer);
 		if( terminar ) {
 			printf( "Finalizando ejecución\n" );
