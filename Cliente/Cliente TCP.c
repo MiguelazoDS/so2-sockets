@@ -75,10 +75,9 @@ void leer_mensaje(int sockfd, char *cadena){
 }
 
 int main( int argc, char *argv[] ) {
-	int sockfd, puerto;
+	int sockfd, puerto, terminar = 0, i;
 	struct sockaddr_in serv_addr;
 	struct hostent *server;
-	int terminar = 0;
 	char buffer[TAM];
 	char *ip=(char*)malloc(TAM*sizeof(char));
 	char *cmd_name_pass=(char*)malloc(TAM*sizeof(char));
@@ -105,14 +104,17 @@ int main( int argc, char *argv[] ) {
 		exit( 1 );
 	}
 
-	while(1) {
-		escribir_mensaje(sockfd,cmd_name_pass);
-		printf( "\n\nmiguel@%s:%d:",ip,puerto);
+	for (i = 0; i < strlen(cmd_name_pass); i++) {
+		buffer[i] = *(cmd_name_pass+i);
+	}
 
-		/*printf( "Ingrese el mensaje a transmitir: ");
+	printf("Este es el buffer %s\n", buffer);
+
+	while(1) {
+		printf( "Ingrese el mensaje a transmitir: " );
 		memset( buffer, '\0', TAM );
-		fgets( buffer, TAM-1, stdin );*/
-		/*escribir_mensaje(sockfd,n,buffer);*/
+		fgets( buffer, TAM-1, stdin );
+		escribir_mensaje(sockfd, buffer);
 
 		/*Verificando si se escribió: fin*/
 		buffer[strlen(buffer)-1] = '\0';
@@ -122,11 +124,10 @@ int main( int argc, char *argv[] ) {
 
 		memset( buffer, '\0', TAM );
 		leer_mensaje(sockfd, buffer);
-		printf( "Respuesta: %s\n", buffer);
+		printf( "Respuesta: %s\n", buffer );
 		if( terminar ) {
 			printf( "Finalizando ejecución\n" );
 			exit(0);
 		}
 	}
-	return 0;
-}
+return 0;}

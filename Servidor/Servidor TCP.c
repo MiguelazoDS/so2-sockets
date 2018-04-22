@@ -43,10 +43,10 @@ int verificar(char *buffer){
 
 /**Función que escribe un mensaje y lo envía al cliente
 Función llamada reiteradas veces por otras funciones que desean enviar datos*/
-void escribir_mensaje(int sockfd, char *cadena){
+void escribir_mensaje(int newsockfd, char *cadena){
 int n;
 	/*Llamada al sistema para enviar datos.*/
-	n = write(sockfd, cadena, strlen(cadena));
+	n = write(newsockfd, cadena, strlen(cadena));
 	if ( n < 0 ) {
 		perror( "escritura en socket" );
 		exit( 1 );
@@ -55,10 +55,10 @@ int n;
 
 /**Función que lee un mensaje.
 Función llamada reiteradas veces por otras funciones que desean leer datos*/
-void leer_mensaje(int sockfd,  char *cadena){
+void leer_mensaje(int newsockfd,  char *cadena){
 	int n;
 	/*Llamada al sistema para enviar datos.*/
-	n = read( sockfd, cadena, TAM );
+	n = read( newsockfd, cadena, TAM-1);
 	if ( n < 0 ) {
 		perror( "lectura de socket" );
 		exit( 1 );
@@ -66,7 +66,7 @@ void leer_mensaje(int sockfd,  char *cadena){
 }
 
 int main( int argc, char *argv[] ) {
-	int sockfd, newsockfd, pid, puerto=6020, validation;
+	int sockfd, newsockfd, pid, puerto=6020;
 	socklen_t clilen;
 	char buffer[TAM];
 	struct sockaddr_in serv_addr, cli_addr;
@@ -110,17 +110,12 @@ int main( int argc, char *argv[] ) {
 
 			while ( 1 ) {
 				memset( buffer, 0, TAM );
-
 				leer_mensaje(newsockfd, buffer);
+
 				printf( "PROCESO %d. ", getpid() );
 				printf( "Recibí: %s", buffer );
-				validation=verificar(buffer);
-				if (validation==1) {
-					escribir_mensaje(newsockfd, "Correcto");
-				}
-				else{
-					escribir_mensaje(newsockfd, "Incorrecto");
-				}
+
+				escribir_mensaje(newsockfd, "Obtuve su mensaje");
 
 				/*Verificación de si hay que terminar*/
 				buffer[strlen(buffer)-1] = '\0';
