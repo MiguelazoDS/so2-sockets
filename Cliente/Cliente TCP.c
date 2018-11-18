@@ -110,6 +110,19 @@ int main( int argc, char *argv[] ) {
 
 	printf("Este es el buffer %s\n", buffer);
 
+	escribir_mensaje(sockfd, buffer);
+	memset(buffer, '\0', TAM);
+	leer_mensaje(sockfd, buffer);
+	printf("Respuesta: %s\n", buffer);
+	printf("longitud %d\n", (int)strlen(buffer));
+	if(!strcmp(buffer, "invalido")){
+		printf("Usuario no autorizado. Desconectado\n" );
+		exit(0);
+	}
+	else{
+		printf("Usuario autorizado!.\n" );
+	}
+
 	while(1) {
 		printf( "Ingrese el mensaje a transmitir: " );
 		memset( buffer, '\0', TAM );

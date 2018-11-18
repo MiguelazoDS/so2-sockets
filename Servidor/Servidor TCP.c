@@ -35,6 +35,16 @@ int verificar(char *buffer){
 		if(i==2){password=palabras;}
 	}
 	password[strlen(password)-1]='\0';
+	/*if(!strcmp(comando,"connect")){
+		printf("comando OK\n");
+	}
+	if(!strcmp(nombre,"miguel")){
+		printf("nombre OK\n" );
+	}
+	if(!strcmp(password,"root")){
+		printf("pass OK\n" );
+	}*/
+
 	if(!strcmp(comando,"connect") && !strcmp(nombre,"miguel") && !strcmp(password,"root")){
 		return 1;
 	}
@@ -107,6 +117,19 @@ int main( int argc, char *argv[] ) {
 
 		if ( pid == 0 ) {  /*Proceso hijo*/
 			close( sockfd );
+
+			memset( buffer, 0, TAM );
+			leer_mensaje(newsockfd, buffer);
+			printf( "Recibí: %s\n", buffer );
+			if (verificar(buffer)){
+				escribir_mensaje(newsockfd, "valido");
+				printf("válido\n");
+			}
+			else{
+				escribir_mensaje(newsockfd, "invalido");
+				printf("invalido\n");
+			}
+
 
 			while ( 1 ) {
 				memset( buffer, 0, TAM );
