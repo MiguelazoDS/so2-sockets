@@ -4,7 +4,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#define TAM 256
+#define TAM 500
 
 /*Función utilizada para leer información recibida.*/
 ssize_t write (int fd, const void *buf, size_t count);
@@ -35,15 +35,6 @@ int verificar(char *buffer){
 		if(i==2){password=palabras;}
 	}
 	password[strlen(password)-1]='\0';
-	/*if(!strcmp(comando,"connect")){
-		printf("comando OK\n");
-	}
-	if(!strcmp(nombre,"miguel")){
-		printf("nombre OK\n" );
-	}
-	if(!strcmp(password,"root")){
-		printf("pass OK\n" );
-	}*/
 
 	if(!strcmp(comando,"connect") && !strcmp(nombre,"miguel") && !strcmp(password,"root")){
 		return 1;
@@ -135,7 +126,6 @@ int main( int argc, char *argv[] ) {
 				printf( "PROCESO %d. ", getpid() );
 				printf( "Recibí: %s", buffer );
 
-				escribir_mensaje(newsockfd, "Obtuve su mensaje");
 
 				/*Verificación de si hay que terminar*/
 				buffer[strlen(buffer)-1] = '\0';
@@ -143,6 +133,18 @@ int main( int argc, char *argv[] ) {
 					printf( "PROCESO %d. Como recibí 'fin', termino la ejecución.\n\n", getpid() );
 					exit(0);
 				}
+				else if (!strcmp("?",buffer)) {
+					escribir_mensaje(newsockfd, "\n\nComandos válidos:\n"
+																			"-\"?\": Devuelve este mensaje\n"
+																			"-\"descargar archivo\": Descarga (si existe) el archivo\n"
+																			"-\"cd path\": Cambia de directorio (si el destino existe)\n"
+																			"-\"pwd\": Devuelve el directorio actual\n"
+																			"-Cualquier otro comando es interpretado por el Bash del servidor\n");
+				}
+				else{
+					escribir_mensaje(newsockfd, "Obtuve su mensaje");
+				}
+
 			}
 		}
 		else {

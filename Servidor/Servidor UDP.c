@@ -41,9 +41,9 @@ int main( int argc, char *argv[] ) {
 		exit( 1 );
 	}
 
-        printf( "Socket disponible: %d\n", ntohs(serv_addr.sin_port) );
+    printf( "Socket disponible: %d\n", ntohs(serv_addr.sin_port) );
 
-	tamano_direccion = sizeof( struct sockaddr );
+		tamano_direccion = sizeof( struct sockaddr );
 
 		memset( buffer, 0, TAM );
 		n = recvfrom( sockfd, buffer, TAM-1, 0, (struct sockaddr *)&serv_addr, &tamano_direccion );
