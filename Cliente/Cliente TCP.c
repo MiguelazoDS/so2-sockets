@@ -88,7 +88,6 @@ int main( int argc, char *argv[] ) {
 		perror( "ERROR apertura de socket" );
 		exit( 1 );
 	}
-	printf("mensaje a servidor: %s\n", cmd_name_pass);
 
 	server = gethostbyname(ip);
 	if (server == NULL) {
@@ -108,13 +107,9 @@ int main( int argc, char *argv[] ) {
 		buffer[i] = *(cmd_name_pass+i);
 	}
 
-	printf("Este es el buffer %s\n", buffer);
-
 	escribir_mensaje(sockfd, buffer);
 	memset(buffer, '\0', TAM);
 	leer_mensaje(sockfd, buffer);
-	printf("Respuesta: %s\n", buffer);
-	printf("longitud %d\n", (int)strlen(buffer));
 	if(!strcmp(buffer, "invalido")){
 		printf("Usuario no autorizado. Desconectado\n" );
 		exit(0);

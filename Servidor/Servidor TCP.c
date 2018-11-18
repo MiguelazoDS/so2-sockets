@@ -120,16 +120,12 @@ int main( int argc, char *argv[] ) {
 
 			memset( buffer, 0, TAM );
 			leer_mensaje(newsockfd, buffer);
-			printf( "Recibí: %s\n", buffer );
 			if (verificar(buffer)){
 				escribir_mensaje(newsockfd, "valido");
-				printf("válido\n");
 			}
 			else{
 				escribir_mensaje(newsockfd, "invalido");
-				printf("invalido\n");
 			}
-
 
 			while ( 1 ) {
 				memset( buffer, 0, TAM );
