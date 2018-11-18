@@ -118,6 +118,7 @@ int main( int argc, char *argv[] ) {
 		if ( pid == 0 ) {  /*Proceso hijo*/
 			close( sockfd );
 
+			/****************Validación******************/
 			memset( buffer, 0, TAM );
 			leer_mensaje(newsockfd, buffer);
 			if (verificar(buffer)){
@@ -126,7 +127,7 @@ int main( int argc, char *argv[] ) {
 			else{
 				escribir_mensaje(newsockfd, "invalido");
 			}
-
+			/*********************************************/
 			while ( 1 ) {
 				memset( buffer, 0, TAM );
 				leer_mensaje(newsockfd, buffer);

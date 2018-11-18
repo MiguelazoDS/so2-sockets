@@ -44,7 +44,7 @@ int main( int argc, char *argv[] ) {
         printf( "Socket disponible: %d\n", ntohs(serv_addr.sin_port) );
 
 	tamano_direccion = sizeof( struct sockaddr );
-	while ( 1 ) {
+
 		memset( buffer, 0, TAM );
 		n = recvfrom( sockfd, buffer, TAM-1, 0, (struct sockaddr *)&serv_addr, &tamano_direccion );
 		if ( n < 0 ) {
@@ -58,6 +58,5 @@ int main( int argc, char *argv[] ) {
 			perror( "escritura en socket" );
 			exit( 1 );
 		}
-	}
 	return 0;
 }

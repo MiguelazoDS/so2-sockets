@@ -106,7 +106,7 @@ int main( int argc, char *argv[] ) {
 	for (i = 0; i < strlen(cmd_name_pass); i++) {
 		buffer[i] = *(cmd_name_pass+i);
 	}
-
+	/******************Login******************/
 	escribir_mensaje(sockfd, buffer);
 	memset(buffer, '\0', TAM);
 	leer_mensaje(sockfd, buffer);
@@ -117,8 +117,9 @@ int main( int argc, char *argv[] ) {
 	else{
 		printf("Usuario autorizado!.\n" );
 	}
-
+	/*****************************************/
 	while(1) {
+		/*Prompt*/
 		printf("miguel@%s:~$ ",ip);
 		memset( buffer, '\0', TAM );
 		fgets( buffer, TAM-1, stdin );
