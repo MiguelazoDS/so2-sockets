@@ -119,7 +119,7 @@ int main( int argc, char *argv[] ) {
 	}
 
 	while(1) {
-		printf( "Ingrese el mensaje a transmitir: " );
+		printf("miguel@%s:~$ ",ip);
 		memset( buffer, '\0', TAM );
 		fgets( buffer, TAM-1, stdin );
 		escribir_mensaje(sockfd, buffer);
