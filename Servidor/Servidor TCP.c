@@ -17,6 +17,10 @@ pid_t getpid(void);
 /*Función que cierra un socket*/
 void close(int newsockfd);
 
+int pwd(char *path){
+	return 0;
+}
+
 /**Función que utiliza el mensaje con información de comando, usuario y contraseña del cliente
 y verifica que coincidan con los que tiene guardados.*/
 int verificar(char *buffer){
@@ -71,6 +75,7 @@ int main( int argc, char *argv[] ) {
 	socklen_t clilen;
 	char buffer[TAM];
 	struct sockaddr_in serv_addr, cli_addr;
+	/*char *directorio_actual;*/
 
 	sockfd = socket( AF_INET, SOCK_STREAM, 0);
 	if ( sockfd < 0 ) {
@@ -140,6 +145,10 @@ int main( int argc, char *argv[] ) {
 																			"-\"cd path\": Cambia de directorio (si el destino existe)\n"
 																			"-\"pwd\": Devuelve el directorio actual\n"
 																			"-Cualquier otro comando es interpretado por el Bash del servidor\n");
+				}
+				else if (!strcmp("pwd",buffer)){
+					/*pwd(directorio_actual);*/
+					escribir_mensaje(newsockfd, "pwd");
 				}
 				else{
 					escribir_mensaje(newsockfd, "Obtuve su mensaje");

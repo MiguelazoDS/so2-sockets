@@ -110,7 +110,7 @@ int main( int argc, char *argv[] ) {
 		buffer[i] = *(cmd_name_pass+i);
 	}
 	/******************Login******************/
-	escribir_mensaje(sockfd, buffer);
+	escribir_mensaje(sockfd, cmd_name_pass);
 	memset(buffer, '\0', TAM);
 	leer_mensaje(sockfd, buffer);
 	if(!strcmp(buffer, "invalido")){
