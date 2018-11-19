@@ -18,10 +18,8 @@ pid_t getpid(void);
 /*Función que cierra un socket*/
 /*void close(int newsockfd);*/
 
-void pwd(char *path, char *dir_inicial){
-	memset(path, '\0', TAM);
-	strcat(path,dir_inicial);
-	strcat(path,"/pwd");
+void pwd(char *output, char *path){
+	/*FILE *file;*/
 	if( access(path, F_OK ) != -1){
   	printf("Existe el archivo\n");
 	}
@@ -86,6 +84,7 @@ int main( int argc, char *argv[] ) {
 	struct sockaddr_in serv_addr, cli_addr;
 	char directorio_inicial[TAM];
 	char path[TAM];
+	char output[TAM];
 	getcwd(directorio_inicial,TAM);
 
 	sockfd = socket( AF_INET, SOCK_STREAM, 0);
@@ -158,8 +157,11 @@ int main( int argc, char *argv[] ) {
 																			"-Cualquier otro comando es interpretado por el Bash del servidor\n");
 				}
 				else if (!strcmp("pwd",buffer)){
-					pwd(path, directorio_inicial);
-					escribir_mensaje(newsockfd, path);
+					memset(path, '\0', TAM);
+					strcat(path,directorio_inicial);
+					strcat(path,"/pwd");
+					pwd(output, path);
+					escribir_mensaje(newsockfd, output);
 				}
 				else{
 					escribir_mensaje(newsockfd, "Obtuve su mensaje");
