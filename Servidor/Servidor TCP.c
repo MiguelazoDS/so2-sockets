@@ -23,14 +23,16 @@ void pwd(char *output, char *path){
 	if( access(path, F_OK ) != -1){
   	printf("Existe el archivo\n");
 		file=fopen("pwd","r");
-		fread(output,1,sizeof(output),file);
+		fgets(output,TAM,file);
+		/*Necesario para borrar un espacio que se agrega al final.*/
+		output[strlen(output)-1] = '\0';
 		fclose(file);
 	}
 	else {
 		printf("No existe el archivo\n");
 		file=fopen("pwd","w");
 		getcwd(output,TAM);
-		fwrite(output,1,sizeof(output),file);
+		fprintf(file, "%s\n", output);
 		fclose(file);
 	}
 }
