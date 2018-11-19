@@ -19,12 +19,19 @@ pid_t getpid(void);
 /*void close(int newsockfd);*/
 
 void pwd(char *output, char *path){
-	/*FILE *file;*/
+	FILE *file;
 	if( access(path, F_OK ) != -1){
   	printf("Existe el archivo\n");
+		file=fopen("pwd","r");
+		fread(output,1,sizeof(output),file);
+		fclose(file);
 	}
 	else {
 		printf("No existe el archivo\n");
+		file=fopen("pwd","w");
+		getcwd(output,TAM);
+		fwrite(output,1,sizeof(output),file);
+		fclose(file);
 	}
 }
 
@@ -158,6 +165,7 @@ int main( int argc, char *argv[] ) {
 				}
 				else if (!strcmp("pwd",buffer)){
 					memset(path, '\0', TAM);
+					memset(output, '\0', TAM);
 					strcat(path,directorio_inicial);
 					strcat(path,"/pwd");
 					pwd(output, path);
