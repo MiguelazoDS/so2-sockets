@@ -71,8 +71,19 @@ void cd(char *cadena){
 	printf("working directory: %s\n", cwd);
 }
 
-void bash(char *comando, char *output){
+void bash(char *output, char *comando){
+	FILE *file;
+	int tam;
 	system(comando);
+	file=fopen("output","r");
+	fseek(file,0,SEEK_END);
+	tam=ftell(file);
+	fseek(file,0,SEEK_SET);
+	fread(output,1,tam,file);
+	/*fgets(output,TAM,file);*/
+	/*Necesario para borrar una nueva línea que se agrega al final.*/
+	/*output[strlen(output)-1] = '\0';*/
+	fclose(file);
 }
 
 /**Función que utiliza el mensaje con información de comando, usuario y contraseña del cliente
@@ -226,8 +237,8 @@ int main( int argc, char *argv[] ) {
 					sprintf(intermedio, "\"%s\"", path);
 					sprintf(final, "%s %s", intermedio, buffer);
 					/*system(final);*/
-					bash(final, output);
-					escribir_mensaje(newsockfd, "output");
+					bash(output, final);
+					escribir_mensaje(newsockfd, output);
 				}
 
 			}
