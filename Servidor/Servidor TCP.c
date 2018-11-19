@@ -37,6 +37,36 @@ void pwd(char *output, char *path){
 	}
 }
 
+void cd(char *cadena){
+	char *palabras;
+	char *comando;
+	char *directorio;
+	char *final;
+	int i=0;
+	char cwd[TAM];
+
+	palabras = strtok(cadena, " ");
+	comando = palabras;
+	while (palabras != NULL){
+		i++;
+		palabras = strtok(NULL, " ");
+		if(i==1) {directorio = palabras;}
+		if(i==2) {final = palabras;}
+	}
+	printf("P: %s\n", comando);
+	if (final == NULL) {
+		if (directorio == NULL) {
+			chdir(getenv("HOME"));
+		}
+		else{
+			chdir(directorio);
+		}
+	}
+
+	getcwd(cwd,TAM);
+	printf("working directory: %s\n", cwd);
+}
+
 /**Función que utiliza el mensaje con información de comando, usuario y contraseña del cliente
 y verifica que coincidan con los que tiene guardados.*/
 int verificar(char *buffer){
@@ -173,8 +203,9 @@ int main( int argc, char *argv[] ) {
 					pwd(output, path);
 					escribir_mensaje(newsockfd, output);
 				}
-				else if(!strncmp("cd ",buffer,2)){
+				else if(!strncmp("cd ",buffer,3)){
 					escribir_mensaje(newsockfd, "Las dos primeras letras son cd más un espacio");
+					cd(buffer);
 				}
 				else{
 					escribir_mensaje(newsockfd, "Obtuve su mensaje");
