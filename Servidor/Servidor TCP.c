@@ -173,6 +173,9 @@ int main( int argc, char *argv[] ) {
 					pwd(output, path);
 					escribir_mensaje(newsockfd, output);
 				}
+				else if(!strncmp("cd ",buffer,2)){
+					escribir_mensaje(newsockfd, "Las dos primeras letras son cd más un espacio");
+				}
 				else{
 					escribir_mensaje(newsockfd, "Obtuve su mensaje");
 				}
