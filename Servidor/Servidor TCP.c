@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <unistd.h>
 #define TAM 500
 
 /*Función utilizada para leer información recibida.*/
@@ -15,10 +16,18 @@ pid_t fork(void);
 /*Función que obtiene el id de un proceso.*/
 pid_t getpid(void);
 /*Función que cierra un socket*/
-void close(int newsockfd);
+/*void close(int newsockfd);*/
 
-int pwd(char *path){
-	return 0;
+void pwd(char *path, char *dir_inicial){
+	memset(path, '\0', TAM);
+	strcat(path,dir_inicial);
+	strcat(path,"/pwd");
+	if( access(path, F_OK ) != -1){
+  	printf("Existe el archivo\n");
+	}
+	else {
+		printf("No existe el archivo\n");
+	}
 }
 
 /**Función que utiliza el mensaje con información de comando, usuario y contraseña del cliente
@@ -75,7 +84,9 @@ int main( int argc, char *argv[] ) {
 	socklen_t clilen;
 	char buffer[TAM];
 	struct sockaddr_in serv_addr, cli_addr;
-	/*char *directorio_actual;*/
+	char directorio_inicial[TAM];
+	char path[TAM];
+	getcwd(directorio_inicial,TAM);
 
 	sockfd = socket( AF_INET, SOCK_STREAM, 0);
 	if ( sockfd < 0 ) {
@@ -147,8 +158,8 @@ int main( int argc, char *argv[] ) {
 																			"-Cualquier otro comando es interpretado por el Bash del servidor\n");
 				}
 				else if (!strcmp("pwd",buffer)){
-					/*pwd(directorio_actual);*/
-					escribir_mensaje(newsockfd, "pwd");
+					pwd(path, directorio_inicial);
+					escribir_mensaje(newsockfd, path);
 				}
 				else{
 					escribir_mensaje(newsockfd, "Obtuve su mensaje");
