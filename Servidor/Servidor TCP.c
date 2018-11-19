@@ -5,7 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
-#define TAM 500
+#define TAM 1024
 
 /*Función utilizada para leer información recibida.*/
 ssize_t write (int fd, const void *buf, size_t count);
@@ -67,6 +67,11 @@ void cd(char *cadena){
 	printf("working directory: %s\n", cwd);
 }
 
+void bash(char *output, char *comando){
+	system(comando);
+	output="salida";
+}
+
 /**Función que utiliza el mensaje con información de comando, usuario y contraseña del cliente
 y verifica que coincidan con los que tiene guardados.*/
 int verificar(char *buffer){
@@ -124,6 +129,9 @@ int main( int argc, char *argv[] ) {
 	char directorio_inicial[TAM];
 	char path[TAM];
 	char output[TAM];
+	char *intermedio=malloc(TAM*sizeof(char));
+
+	char *final=malloc(TAM*sizeof(char));
 	getcwd(directorio_inicial,TAM);
 
 	sockfd = socket( AF_INET, SOCK_STREAM, 0);
@@ -195,7 +203,7 @@ int main( int argc, char *argv[] ) {
 																			"-\"pwd\": Devuelve el directorio actual\n"
 																			"-Cualquier otro comando es interpretado por el Bash del servidor\n");
 				}
-				else if (!strcmp("pwd",buffer)){
+				else if (!strcmp("pwdf",buffer)){
 					memset(path, '\0', TAM);
 					memset(output, '\0', TAM);
 					strcat(path,directorio_inicial);
@@ -208,7 +216,14 @@ int main( int argc, char *argv[] ) {
 					cd(buffer);
 				}
 				else{
-					escribir_mensaje(newsockfd, "Obtuve su mensaje");
+					memset(path, '\0', TAM);
+					memset(output, '\0', TAM);
+					strcat(path,directorio_inicial);
+					strcat(path,"/Bash/Bash");
+					sprintf(intermedio, "\"%s\"", path);
+					sprintf(final, "%s %s", intermedio, buffer);
+					system(final);
+					escribir_mensaje(newsockfd, "salida");
 				}
 
 			}

@@ -5,7 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#define TAM 500
+#define TAM 1024
 
 /*Función utilizada para mandar información por socket.*/
 ssize_t write (int fd, const void *buf, size_t count);
@@ -106,6 +106,7 @@ int main( int argc, char *argv[] ) {
 	caracteres más a la cadena que recibe el servidor.*/
 	memset(buffer, '\0', TAM);
 
+	/*Borrar esto*/
 	for (i = 0; i < strlen(cmd_name_pass); i++) {
 		buffer[i] = *(cmd_name_pass+i);
 	}
