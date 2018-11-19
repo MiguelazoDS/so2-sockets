@@ -38,38 +38,41 @@ void pwd(char *output, char *path){
 }
 
 void cd(char *cadena){
-	char *palabras;
-	char *comando;
-	char *directorio;
-	char *final;
-	int i=0;
+	/*char *palabras;*/
+	char *comando=malloc(TAM*sizeof(char));
+	char *aux=malloc(TAM*sizeof(char));
+	char *directorio=malloc(TAM*sizeof(char));;
+	/*int i=0;*/
 	char cwd[TAM];
 
-	palabras = strtok(cadena, " ");
+	/*palabras = strtok(cadena, " ");
 	comando = palabras;
 	while (palabras != NULL){
 		i++;
 		palabras = strtok(NULL, " ");
-		if(i==1) {directorio = palabras;}
-		if(i==2) {final = palabras;}
-	}
+		directorio=palabras;
+		strcat(final,directorio);
+	}*/
+
+	sscanf(cadena, "%s", comando);
+	aux=strchr(cadena,' ');
+	directorio=aux+1;
 	printf("P: %s\n", comando);
-	if (final == NULL) {
-		if (directorio == NULL) {
-			chdir(getenv("HOME"));
-		}
-		else{
-			chdir(directorio);
-		}
+	printf("D: %s %d\n", directorio, *directorio);
+
+	if (*directorio == 0) {
+		chdir(getenv("HOME"));
+	}
+	else{
+		chdir(directorio);
 	}
 
 	getcwd(cwd,TAM);
 	printf("working directory: %s\n", cwd);
 }
 
-void bash(char *output, char *comando){
+void bash(char *comando, char *output){
 	system(comando);
-	output="salida";
 }
 
 /**Función que utiliza el mensaje con información de comando, usuario y contraseña del cliente
@@ -222,8 +225,9 @@ int main( int argc, char *argv[] ) {
 					strcat(path,"/Bash/Bash");
 					sprintf(intermedio, "\"%s\"", path);
 					sprintf(final, "%s %s", intermedio, buffer);
-					system(final);
-					escribir_mensaje(newsockfd, "salida");
+					/*system(final);*/
+					bash(final, output);
+					escribir_mensaje(newsockfd, "output");
 				}
 
 			}
