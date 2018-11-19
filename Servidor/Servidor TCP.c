@@ -41,7 +41,7 @@ void cd(char *cadena){
 	/*char *palabras;*/
 	char *comando=malloc(TAM*sizeof(char));
 	char *aux=malloc(TAM*sizeof(char));
-	char *directorio=malloc(TAM*sizeof(char));;
+	char *directorio=malloc(TAM*sizeof(char));
 	/*int i=0;*/
 	char cwd[TAM];
 
@@ -84,6 +84,20 @@ void bash(char *output, char *comando){
 	/*Necesario para borrar una nueva línea que se agrega al final.*/
 	/*output[strlen(output)-1] = '\0';*/
 	fclose(file);
+}
+
+int existe_archivo(char *path){
+	char *aux=malloc(TAM*sizeof(char));
+	char *archivo=malloc(TAM*sizeof(char));
+
+	aux=strchr(path,' ');
+	archivo=aux+1;
+
+	if( access(archivo, F_OK ) != -1){
+		return 1;
+	}
+	else
+		return 0;
 }
 
 /**Función que utiliza el mensaje con información de comando, usuario y contraseña del cliente
@@ -228,6 +242,12 @@ int main( int argc, char *argv[] ) {
 				else if(!strncmp("cd ",buffer,3)){
 					escribir_mensaje(newsockfd, "Las dos primeras letras son cd más un espacio");
 					cd(buffer);
+				}
+				else if(!strncmp("descargar ", buffer, 10)){
+					if (existe_archivo(buffer))
+						escribir_mensaje(newsockfd, "Existe el archivo");				
+					else
+						escribir_mensaje(newsockfd, "No existe el archivo");
 				}
 				else{
 					memset(path, '\0', TAM);
