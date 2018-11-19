@@ -24,7 +24,7 @@ void pwd(char *output, char *path){
   	printf("Existe el archivo\n");
 		file=fopen("pwd","r");
 		fgets(output,TAM,file);
-		/*Necesario para borrar un espacio que se agrega al final.*/
+		/*Necesario para borrar una nueva línea que se agrega al final.*/
 		output[strlen(output)-1] = '\0';
 		fclose(file);
 	}
