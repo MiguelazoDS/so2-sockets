@@ -5,7 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#define TAM 8
+#define TAM 245
 
 /*Función utilizada para leer información recibida.*/
 ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags, struct sockaddr *src_addr, socklen_t *addrlen);
@@ -57,6 +57,8 @@ int main( int argc, char *argv[] ) {
 	file=fopen("SO2-2018-TP1.pdf","wb");
 
 	while(bucle){
+				memset( buffer, 0, sizeof( buffer ) );
+
         n = recvfrom( sockfd, (void *)buffer, TAM, 0, (struct sockaddr *)&dest_addr, &tamano_direccion );
         if ( n < 0 ) {
             perror( "Lectura de socket" );
@@ -65,13 +67,22 @@ int main( int argc, char *argv[] ) {
 				printf( "Respuesta: %s\n", buffer);
 
 				if(!strcmp("termine",buffer)){
+					n = sendto( sockfd, (void *)"ok", TAM, 0, (struct sockaddr *)&dest_addr, tamano_direccion );
+
 					bucle=0;
 				}
 				else{
 					fwrite(buffer, TAM, 1, file);
-					memset( buffer, 0, sizeof( buffer ) );
+					/*memset( buffer, 0, sizeof( buffer ) );*/
 				}
     }
+
+		memset( buffer, 0, sizeof( buffer ) );
+
+		n = recvfrom( sockfd, (void *)buffer, TAM, 0, (struct sockaddr *)&dest_addr, &tamano_direccion );
+		printf( "Respuesta: %s\n", buffer);
+
+		fwrite(buffer, strlen(buffer), 1, file);
 	fclose(file);
 	return 0;
 }
