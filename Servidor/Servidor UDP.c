@@ -6,7 +6,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include "line_counter.h"
-#define TAM 245
+#define TAM 64
 
 /*Función utilizada para leer información recibida.*/
 ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags, struct sockaddr *src_addr, socklen_t *addrlen);
@@ -77,7 +77,7 @@ int main( int argc, char *argv[] ) {
             perror( "escritura en socket" );
             exit( 1 );
         }
-				usleep(50);
+				usleep(10);
 				memset( buffer, 0, sizeof( buffer ) );
 				/*fread(buffer,TAM,1,file);*/
         contador++;
