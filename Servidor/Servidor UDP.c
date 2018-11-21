@@ -61,5 +61,7 @@ int main( int argc, char *argv[] ) {
         contador--;
     }
     n = sendto( sockfd, (void *)"Final", 18, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
+		n = sendto( sockfd, (void *)"termine", 18, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
+
 	return 0;
 }
