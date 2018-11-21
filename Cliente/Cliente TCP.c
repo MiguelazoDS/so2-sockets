@@ -74,6 +74,10 @@ void leer_mensaje(int sockfd, char *cadena){
 	}
 }
 
+void UDP(char *ip){
+	printf("La ip es: %s\n", ip);
+}
+
 int main( int argc, char *argv[] ) {
 	int sockfd, puerto, terminar = 0, i;
 	struct sockaddr_in serv_addr;
@@ -135,17 +139,17 @@ int main( int argc, char *argv[] ) {
 			terminar = 1;
 		}
 
-		if(!strcmp("ok",buffer)){
-			sleep(1);
-			printf("Llama a función UDP\n");
-		}
-
 		memset( buffer, '\0', TAM );
 		leer_mensaje(sockfd, buffer);
 		printf( "Respuesta: %s\n", buffer );
 		if( terminar ) {
 			printf( "Finalizando ejecución\n" );
 			exit(0);
+		}
+		else if(!strcmp("ok",buffer)){
+				sleep(1);
+				UDP(ip);
+				printf("Llama a función UDP\n");
 		}
 	}
 return 0;}

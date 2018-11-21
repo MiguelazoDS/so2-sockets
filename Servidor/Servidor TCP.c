@@ -86,13 +86,14 @@ void bash(char *output, char *comando){
 	fclose(file);
 }
 
-int existe_archivo(char *path){
+int existe_archivo(char *path, char *arch){
 	char *aux=malloc(TAM*sizeof(char));
 	char *archivo=malloc(TAM*sizeof(char));
 
 	aux=strchr(path,' ');
 	archivo=aux+1;
-
+	strcpy(arch,archivo);
+	printf("Dentro de la función: %s\n", archivo);
 	if( access(archivo, F_OK ) != -1){
 		return 1;
 	}
@@ -149,6 +150,10 @@ void leer_mensaje(int newsockfd,  char *cadena){
 	}
 }
 
+void UDP(char *archivo){
+	printf("Función UDP: %s\n", archivo);
+}
+
 int main( int argc, char *argv[] ) {
 	int sockfd, newsockfd, pid, puerto=6020;
 	socklen_t clilen;
@@ -158,8 +163,8 @@ int main( int argc, char *argv[] ) {
 	char path[TAM];
 	char output[TAM];
 	char *intermedio=malloc(TAM*sizeof(char));
-
 	char *final=malloc(TAM*sizeof(char));
+	char *archivo=malloc(TAM*sizeof(char));
 	getcwd(directorio_inicial,TAM);
 
 	sockfd = socket( AF_INET, SOCK_STREAM, 0);
@@ -244,9 +249,9 @@ int main( int argc, char *argv[] ) {
 					cd(buffer);
 				}
 				else if(!strncmp("descargar ", buffer, 10)){
-					if (existe_archivo(buffer)){
+					if (existe_archivo(buffer,archivo)){
 						escribir_mensaje(newsockfd, "ok");
-						printf("Llama a función UDP\n");
+						UDP(archivo);
 					}
 					else
 						escribir_mensaje(newsockfd, "No existe el archivo");
