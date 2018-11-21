@@ -33,7 +33,7 @@ int main( int argc, char *argv[] ) {
 	}
 
 	memset( &serv_addr, 0, sizeof(serv_addr) );
-	puerto = atoi( argv[1] );
+	puerto = 6020;/*atoi( argv[1] );*/
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_addr.s_addr = INADDR_ANY;
 	serv_addr.sin_port = htons( puerto );
@@ -54,10 +54,10 @@ int main( int argc, char *argv[] ) {
         perror( "lectura de socket" );
         exit( 1 );
     }
-		n = sendto( sockfd, (void *)argv[2], TAM, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
+		n = sendto( sockfd, (void *)argv[1], TAM, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
 
     /*printf( "Recibí: %s", buffer );*/
-		file=fopen(argv[2],"rb");
+		file=fopen(argv[1],"rb");
 		fseek(file,0,SEEK_END);
 		size=ftell(file);
 		fseek(file,0,SEEK_SET);
@@ -66,11 +66,11 @@ int main( int argc, char *argv[] ) {
 		printf("tamaño: %d\n", (int)(size));
 		printf("archivo: %s\n", buffer);*/
 		memset( buffer, 0, sizeof( buffer ) );
-		printf("%d\n", lineas);
+		/*printf("%d\n", lineas);*/
 		while(contador*TAM<size/*(int)ftell(file)!=size!feof(file)fread(buffer,TAM,1,file)*/){
     		fread(buffer,TAM,1,file);
 				lineas--;
-				printf("posicion: %d tamaño: %d\n", (int)ftell(file), size);
+				/*printf("posicion: %d tamaño: %d\n", (int)ftell(file), size);*/
 				/*printf("leyendo: %s", buffer);*/
         n = sendto( sockfd, (void *)buffer, TAM, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
         if ( n < 0 ) {
@@ -87,7 +87,7 @@ int main( int argc, char *argv[] ) {
 		memset( buffer, 0, sizeof( buffer ) );
 		/*sprintf(buffer,"%d",size%(int)ftell(file));*/
 		fread(buffer,size%(int)ftell(file),1,file);
-		printf("posicion: %d tamaño: %d\n", (int)ftell(file), size);
+		/*printf("posicion: %d tamaño: %d\n", (int)ftell(file), size);*/
 
 		n = sendto( sockfd, (void *)buffer, TAM, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
 
