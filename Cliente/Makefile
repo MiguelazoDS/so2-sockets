@@ -6,5 +6,6 @@ clean:
 	-rm -rf Cliente\ UDP
 	-rm -rf SO2-2018-TP1.pdf
 	-rm -rf What\ It\ Is.mp4
+	-rm -rf What\ It\ Is
 run:
 	./Cliente\ TCP
