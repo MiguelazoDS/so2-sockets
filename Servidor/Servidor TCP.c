@@ -244,8 +244,10 @@ int main( int argc, char *argv[] ) {
 					cd(buffer);
 				}
 				else if(!strncmp("descargar ", buffer, 10)){
-					if (existe_archivo(buffer))
-						escribir_mensaje(newsockfd, "Existe el archivo");				
+					if (existe_archivo(buffer)){
+						escribir_mensaje(newsockfd, "ok");
+						printf("Llama a función UDP\n");
+					}
 					else
 						escribir_mensaje(newsockfd, "No existe el archivo");
 				}

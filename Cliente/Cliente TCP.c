@@ -135,6 +135,11 @@ int main( int argc, char *argv[] ) {
 			terminar = 1;
 		}
 
+		if(!strcmp("ok",buffer)){
+			sleep(1);
+			printf("Llama a función UDP\n");
+		}
+
 		memset( buffer, '\0', TAM );
 		leer_mensaje(sockfd, buffer);
 		printf( "Respuesta: %s\n", buffer );
