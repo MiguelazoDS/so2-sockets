@@ -54,8 +54,10 @@ int main( int argc, char *argv[] ) {
         perror( "lectura de socket" );
         exit( 1 );
     }
+		n = sendto( sockfd, (void *)argv[2], TAM, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
+
     /*printf( "Recibí: %s", buffer );*/
-		file=fopen("SO2-2018-TP1.pdf","rb");
+		file=fopen(argv[2],"rb");
 		fseek(file,0,SEEK_END);
 		size=ftell(file);
 		fseek(file,0,SEEK_SET);

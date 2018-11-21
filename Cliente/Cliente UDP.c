@@ -54,7 +54,9 @@ int main( int argc, char *argv[] ) {
 		perror( "Escritura en socket" );
 		exit( 1 );
 	}
-	file=fopen("SO2-2018-TP1.pdf","wb");
+	n = recvfrom( sockfd, (void *)buffer, TAM, 0, (struct sockaddr *)&dest_addr, &tamano_direccion );
+	printf("Nombre del archivo: %s\n", buffer);
+	file=fopen(buffer,"wb");
 
 	while(bucle){
 				memset( buffer, 0, sizeof( buffer ) );
@@ -64,7 +66,7 @@ int main( int argc, char *argv[] ) {
             perror( "Lectura de socket" );
             exit( 1 );
         }
-				printf( "Respuesta: %s\n", buffer);
+				/*printf( "Respuesta: %s\n", buffer);*/
 
 				if(!strcmp("termine",buffer)){
 					n = sendto( sockfd, (void *)"ok", TAM, 0, (struct sockaddr *)&dest_addr, tamano_direccion );
@@ -80,7 +82,7 @@ int main( int argc, char *argv[] ) {
 		memset( buffer, 0, sizeof( buffer ) );
 
 		n = recvfrom( sockfd, (void *)buffer, TAM, 0, (struct sockaddr *)&dest_addr, &tamano_direccion );
-		printf( "Respuesta: %s\n", buffer);
+		/*printf( "Respuesta: %s\n", buffer);*/
 
 		fwrite(buffer, strlen(buffer), 1, file);
 	fclose(file);
