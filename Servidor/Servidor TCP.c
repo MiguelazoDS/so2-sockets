@@ -259,6 +259,7 @@ int main( int argc, char *argv[] ) {
 					/*system(final);*/
 					bash(output, final);
 					escribir_mensaje(newsockfd, output);
+                    remove("output");
 				}
 
 			}

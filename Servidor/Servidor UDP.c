@@ -16,7 +16,7 @@ int main( int argc, char *argv[] ) {
 	socklen_t tamano_direccion;
 	char buffer[ TAM ];
 	struct sockaddr_in serv_addr;
-	int n;
+	int n, contador=3;
 
 	if ( argc < 2 ) {
         	fprintf( stderr, "Uso: %s <puerto>\n", argv[0] );
@@ -43,20 +43,23 @@ int main( int argc, char *argv[] ) {
 
     printf( "Socket disponible: %d\n", ntohs(serv_addr.sin_port) );
 
-		tamano_direccion = sizeof( struct sockaddr );
+    tamano_direccion = sizeof( struct sockaddr );
 
-		memset( buffer, 0, TAM );
-		n = recvfrom( sockfd, buffer, TAM-1, 0, (struct sockaddr *)&serv_addr, &tamano_direccion );
-		if ( n < 0 ) {
-			perror( "lectura de socket" );
-			exit( 1 );
-		}
-		printf( "Recibí: %s", buffer );
-
-		n = sendto( sockfd, (void *)"Obtuve su mensaje", 18, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
-		if ( n < 0 ) {
-			perror( "escritura en socket" );
-			exit( 1 );
-		}
+    memset( buffer, 0, TAM );
+    n = recvfrom( sockfd, buffer, TAM-1, 0, (struct sockaddr *)&serv_addr, &tamano_direccion );
+    if ( n < 0 ) {
+        perror( "lectura de socket" );
+        exit( 1 );
+    }
+    /*printf( "Recibí: %s", buffer );*/
+    while(contador){
+        n = sendto( sockfd, (void *)"Mensaje", 18, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
+        if ( n < 0 ) {
+            perror( "escritura en socket" );
+            exit( 1 );
+        }
+        contador--;
+    }
+    n = sendto( sockfd, (void *)"Final", 18, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
 	return 0;
 }
