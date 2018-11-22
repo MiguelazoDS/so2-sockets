@@ -16,7 +16,7 @@
 #define LSH_TOK_BUFSIZE 64
 #define LSH_TOK_DELIM " \t\r\n\a"
 #define directorio_actual 500
-#define BUFFSIZE 256
+#define BUFFSIZE 2048
 
 char output[BUFFSIZE];
 int nbytes;
