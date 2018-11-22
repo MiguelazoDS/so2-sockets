@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include "Servidor UDP.h"
 #define TAM 1024
 
 /*Función utilizada para leer información recibida.*/
@@ -152,6 +153,9 @@ void leer_mensaje(int newsockfd,  char *cadena){
 
 void UDP(char *archivo){
 	printf("Función UDP: %s\n", archivo);
+	char *comando=malloc(TAM*sizeof(char));
+	sprintf(comando, "./Servidor\\ UDP \"%s\"", archivo);
+	system(comando);
 }
 
 int main( int argc, char *argv[] ) {
