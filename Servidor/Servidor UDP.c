@@ -5,25 +5,26 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
-#define BUFF_SIZE 64
+#include "line_counter.h"
+#define TAM 64
 
 /*Función utilizada para leer información recibida.*/
 ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags, struct sockaddr *src_addr, socklen_t *addrlen);
 /*Función utilizada para mandar información por socket.*/
 ssize_t sendto(int sockfd, const void *buf, size_t len, int flags, const struct sockaddr *dest_addr, socklen_t addrlen);
 
-void UDP(char *archivo) {
+int main( int argc, char *argv[] ) {
 	int sockfd, puerto, size, lineas;
 	socklen_t tamano_direccion;
-	char buffer[ BUFF_SIZE ];
+	char buffer[ TAM ];
 	struct sockaddr_in serv_addr;
 	int n, contador=1;
 	FILE *file;
 
-	/*if ( argc < 2 ) {
+	if ( argc < 2 ) {
         	fprintf( stderr, "Uso: %s <puerto>\n", argv[0] );
 		exit( 1 );
-	}*/
+	}
 
 	sockfd = socket( AF_INET, SOCK_DGRAM, 0 );
 	if (sockfd < 0) {
@@ -47,30 +48,31 @@ void UDP(char *archivo) {
 
     tamano_direccion = sizeof( struct sockaddr );
 
-    memset( buffer, 0, BUFF_SIZE );
-    n = recvfrom( sockfd, buffer, BUFF_SIZE-1, 0, (struct sockaddr *)&serv_addr, &tamano_direccion );
+    memset( buffer, 0, TAM );
+    n = recvfrom( sockfd, buffer, TAM-1, 0, (struct sockaddr *)&serv_addr, &tamano_direccion );
     if ( n < 0 ) {
         perror( "lectura de socket" );
         exit( 1 );
     }
-		n = sendto( sockfd, (void *)archivo, BUFF_SIZE, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
+		n = sendto( sockfd, (void *)argv[1], TAM, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
 
     /*printf( "Recibí: %s", buffer );*/
-		file=fopen(archivo,"rb");
+		file=fopen(argv[1],"rb");
 		fseek(file,0,SEEK_END);
 		size=ftell(file);
 		fseek(file,0,SEEK_SET);
+		lineas=line_counter(file);
 		/*fread(buffer,TAM,1,file);
 		printf("tamaño: %d\n", (int)(size));
 		printf("archivo: %s\n", buffer);*/
 		memset( buffer, 0, sizeof( buffer ) );
 		/*printf("%d\n", lineas);*/
-		while(contador*BUFF_SIZE<size/*(int)ftell(file)!=size!feof(file)fread(buffer,TAM,1,file)*/){
-    		fread(buffer,BUFF_SIZE,1,file);
+		while(contador*TAM<size/*(int)ftell(file)!=size!feof(file)fread(buffer,TAM,1,file)*/){
+    		fread(buffer,TAM,1,file);
 				lineas--;
 				/*printf("posicion: %d tamaño: %d\n", (int)ftell(file), size);*/
 				/*printf("leyendo: %s", buffer);*/
-        n = sendto( sockfd, (void *)buffer, BUFF_SIZE, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
+        n = sendto( sockfd, (void *)buffer, TAM, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
         if ( n < 0 ) {
             perror( "escritura en socket" );
             exit( 1 );
@@ -85,9 +87,9 @@ void UDP(char *archivo) {
 		memset( buffer, 0, sizeof( buffer ) );
 		/*sprintf(buffer,"%d",size%(int)ftell(file));*/
 		fread(buffer,size%(int)ftell(file),1,file);
-		/*printf("posicion: %d BUFF_SIZEaño: %d\n", (int)ftell(file), size);*/
+		/*printf("posicion: %d tamaño: %d\n", (int)ftell(file), size);*/
 
-		n = sendto( sockfd, (void *)buffer, BUFF_SIZE, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
+		n = sendto( sockfd, (void *)buffer, TAM, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
 
 		/*n = sendto( sockfd, (void *)"termine", TAM, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
 */
@@ -107,4 +109,5 @@ void UDP(char *archivo) {
     n = sendto( sockfd, (void *)buffer, TAM, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
 		n = sendto( sockfd, (void *)"termine", 7, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );*/
 		fclose(file);
+	return 0;
 }
