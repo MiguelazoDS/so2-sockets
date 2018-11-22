@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include "Cliente UDP.h"
 #define TAM 1024
 
 /*Función utilizada para mandar información por socket.*/
@@ -72,10 +73,6 @@ void leer_mensaje(int sockfd, char *cadena){
 		perror( "lectura de socket" );
 		exit( 1 );
 	}
-}
-
-void UDP(char *ip){
-	printf("La ip es: %s\n", ip);
 }
 
 int main( int argc, char *argv[] ) {
