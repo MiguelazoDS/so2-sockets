@@ -16,49 +16,16 @@ pid_t fork(void);
 /*Función que obtiene el id de un proceso.*/
 pid_t getpid(void);
 /*Función que cierra un socket*/
-/*void close(int newsockfd);*/
-
-void pwd(char *output, char *path){
-	FILE *file;
-	if( access(path, F_OK ) != -1){
-  	printf("Existe el archivo\n");
-		file=fopen("pwd","r");
-		fgets(output,TAM,file);
-		/*Necesario para borrar una nueva línea que se agrega al final.*/
-		output[strlen(output)-1] = '\0';
-		fclose(file);
-	}
-	else {
-		printf("No existe el archivo\n");
-		file=fopen("pwd","w");
-		getcwd(output,TAM);
-		fprintf(file, "%s\n", output);
-		fclose(file);
-	}
-}
 
 void cd(char *cadena){
-	/*char *palabras;*/
 	char *comando=malloc(TAM*sizeof(char));
 	char *aux=malloc(TAM*sizeof(char));
 	char *directorio=malloc(TAM*sizeof(char));
-	/*int i=0;*/
 	char cwd[TAM];
-
-	/*palabras = strtok(cadena, " ");
-	comando = palabras;
-	while (palabras != NULL){
-		i++;
-		palabras = strtok(NULL, " ");
-		directorio=palabras;
-		strcat(final,directorio);
-	}*/
 
 	sscanf(cadena, "%s", comando);
 	aux=strchr(cadena,' ');
 	directorio=aux+1;
-	printf("P: %s\n", comando);
-	printf("D: %s %d\n", directorio, *directorio);
 
 	if (*directorio == 0) {
 		chdir(getenv("HOME"));
@@ -68,7 +35,6 @@ void cd(char *cadena){
 	}
 
 	getcwd(cwd,TAM);
-	printf("working directory: %s\n", cwd);
 }
 
 void bash(char *output, char *comando){
@@ -80,9 +46,6 @@ void bash(char *output, char *comando){
 	tam=ftell(file);
 	fseek(file,0,SEEK_SET);
 	fread(output,1,tam,file);
-	/*fgets(output,TAM,file);*/
-	/*Necesario para borrar una nueva línea que se agrega al final.*/
-	/*output[strlen(output)-1] = '\0';*/
 	fclose(file);
 }
 
@@ -93,7 +56,6 @@ int existe_archivo(char *path, char *arch){
 	aux=strchr(path,' ');
 	archivo=aux+1;
 	strcpy(arch,archivo);
-	printf("Dentro de la función: %s\n", archivo);
 	if( access(archivo, F_OK ) != -1){
 		return 1;
 	}
@@ -151,7 +113,6 @@ void leer_mensaje(int newsockfd,  char *cadena){
 }
 
 void UDP(int puerto, char *archivo){
-	printf("Función UDP: %s\n", archivo);
 	char *comando=malloc(TAM*sizeof(char));
 	sprintf(comando, "./Servidor\\ UDP %d \"%s\"", puerto, archivo);
 	system(comando);
@@ -236,24 +197,15 @@ int main( int argc, char *argv[] ) {
 																			"-\"?\": Devuelve este mensaje\n"
 																			"-\"descargar archivo\": Descarga (si existe) el archivo\n"
 																			"-\"cd path\": Cambia de directorio (si el destino existe)\n"
-																			"-\"pwd\": Devuelve el directorio actual\n"
 																			"-Cualquier otro comando es interpretado por el Bash del servidor\n");
 				}
-				else if (!strcmp("pwdf",buffer)){
-					memset(path, '\0', TAM);
-					memset(output, '\0', TAM);
-					strcat(path,directorio_inicial);
-					strcat(path,"/pwd");
-					pwd(output, path);
-					escribir_mensaje(newsockfd, output);
-				}
 				else if(!strncmp("cd ",buffer,3)){
-					escribir_mensaje(newsockfd, "Las dos primeras letras son cd más un espacio");
+					escribir_mensaje(newsockfd, "Cambio de directorio");
 					cd(buffer);
 				}
 				else if(!strncmp("descargar ", buffer, 10)){
 					if (existe_archivo(buffer,archivo)){
-						escribir_mensaje(newsockfd, "ok");
+						escribir_mensaje(newsockfd, "Descargando...");
 						UDP(puerto, archivo);
 					}
 					else
@@ -266,10 +218,9 @@ int main( int argc, char *argv[] ) {
 					strcat(path,"/Bash/Bash");
 					sprintf(intermedio, "\"%s\"", path);
 					sprintf(final, "%s %s", intermedio, buffer);
-					/*system(final);*/
 					bash(output, final);
 					escribir_mensaje(newsockfd, output);
-                    remove("output");
+          remove("output");
 				}
 
 			}

@@ -26,7 +26,6 @@ void ingresar_comando(char **cmd_name_pass, char **ip, int *puerto){
 	char *nombre;
 	int j, i=0;
 
-	/**puerto=6020;*/
 	printf("\nIngresar usuario con el formato: connect usuario@numero_ip:port"
 					"  con numero_ip a.b.c.d y port de 4 dígitos");
 
@@ -87,7 +86,6 @@ void leer_mensaje(int sockfd, char *cadena){
 }
 
 void UDP(char *ip, int puerto){
-	printf("La ip es: %s\n", ip);
 	char *comando=malloc(TAM*sizeof(char));
 	sprintf(comando, "./Cliente\\ UDP %s %d", ip, puerto);
 	system(comando);
@@ -156,15 +154,14 @@ int main( int argc, char *argv[] ) {
 
 		memset( buffer, '\0', TAM );
 		leer_mensaje(sockfd, buffer);
-		printf( "Respuesta: %s\n", buffer );
+		printf( "Servidor: %s\n", buffer );
 		if( terminar ) {
 			printf( "Finalizando ejecución\n" );
 			exit(0);
 		}
-		else if(!strcmp("ok",buffer)){
+		else if(!strcmp("Descargando...",buffer)){
 				sleep(1);
 				UDP(ip, puerto);
-				printf("Llama a función UDP\n");
 		}
 	}
 return 0;}
