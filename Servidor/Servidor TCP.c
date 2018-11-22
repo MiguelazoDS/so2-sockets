@@ -152,6 +152,9 @@ void leer_mensaje(int newsockfd,  char *cadena){
 
 void UDP(char *archivo){
 	printf("Función UDP: %s\n", archivo);
+	char *comando=malloc(TAM*sizeof(char));
+	sprintf(comando, "./Servidor\\ UDP \"%s\"", archivo);
+	system(comando);
 }
 
 int main( int argc, char *argv[] ) {
