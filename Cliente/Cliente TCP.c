@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <string.h>
 #define TAM 1024
 
 /*Función utilizada para mandar información por socket.*/
@@ -25,7 +26,7 @@ void ingresar_comando(char **cmd_name_pass, char **ip, int *puerto){
 	char *nombre;
 	int j, i=0;
 
-	*puerto=6020;
+	/**puerto=6020;*/
 	printf("\nIngresar usuario con el formato: connect usuario@numero_ip:port"
 					"  con numero_ip a.b.c.d y port de 4 dígitos");
 
@@ -33,6 +34,11 @@ void ingresar_comando(char **cmd_name_pass, char **ip, int *puerto){
 	fgets(login,50,stdin);
 	printf("\nContraseña: ");
 	fgets(password,50,stdin);
+
+	if (strchr(login,':') == NULL){
+		printf("\nNo se ingresó número de puerto. Finalizado.\n");
+		exit(0);
+	}
 
 	palabras = strtok(login, " @:");
 	comando = palabras;
@@ -47,6 +53,12 @@ void ingresar_comando(char **cmd_name_pass, char **ip, int *puerto){
 		}
 		if(i==3){*puerto=(atoi(palabras));}
 	}
+
+	if (*puerto != 6020){
+		printf("\nEl número de puerto es incorrecto. Finalizado.\n");
+		exit(0);
+	}
+
 	strcat(strcat(strcat(strcat(strcat(*cmd_name_pass,comando),"@"),nombre),"@"),password);
 }
 
