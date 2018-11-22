@@ -151,8 +151,6 @@ void leer_mensaje(int newsockfd,  char *cadena){
 	}
 }
 
-<<<<<<< HEAD
-=======
 void UDP(char *archivo){
 	printf("Función UDP: %s\n", archivo);
 	char *comando=malloc(TAM*sizeof(char));
@@ -160,7 +158,6 @@ void UDP(char *archivo){
 	system(comando);
 }
 
->>>>>>> no_headers
 int main( int argc, char *argv[] ) {
 	int sockfd, newsockfd, pid, puerto=6020;
 	socklen_t clilen;
