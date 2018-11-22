@@ -21,18 +21,13 @@ int main( int argc, char *argv[] ) {
 	FILE *file;
 	char buffer[TAM];
 
-	/*if (argc < 3) {
-		fprintf( stderr, "Uso %s host puerto\n", argv[0] );
-		exit(0);
-	}*/
-
 	server = gethostbyname( argv[1] );
 	if ( server == NULL ) {
 		fprintf( stderr, "ERROR, no existe el host\n");
 		exit(0);
 	}
 
-	puerto = 6020;/*atoi( argv[2] );*/
+	puerto = atoi(argv[2]);
 	sockfd = socket( AF_INET, SOCK_DGRAM, 0 );
 	if (sockfd < 0) {
 		perror( "apertura de socket" );
@@ -44,10 +39,6 @@ int main( int argc, char *argv[] ) {
 	dest_addr.sin_addr = *( (struct in_addr *)server->h_addr );
 	memset( &(dest_addr.sin_zero), '\0', 8 );
 
-	/*printf( "Ingrese el mensaje a transmitir: " );
-	memset( buffer, 0, TAM );
-	fgets( buffer, TAM, stdin );*/
-
 	tamano_direccion = sizeof( dest_addr );
 	n = sendto( sockfd, (void *)"ok", TAM, 0, (struct sockaddr *)&dest_addr, tamano_direccion );
 	if ( n < 0 ) {
@@ -55,7 +46,6 @@ int main( int argc, char *argv[] ) {
 		exit( 1 );
 	}
 	n = recvfrom( sockfd, (void *)buffer, TAM, 0, (struct sockaddr *)&dest_addr, &tamano_direccion );
-	/*printf("Nombre del archivo: %s\n", buffer);*/
 	file=fopen(buffer,"wb");
 
 	while(bucle){
@@ -74,16 +64,13 @@ int main( int argc, char *argv[] ) {
 				}
 				else{
 					fwrite(buffer, TAM, 1, file);
-					/*memset( buffer, 0, sizeof( buffer ) );*/
 					printf( "Recibido: %d bytes.\n", (int)ftell(file));
-
 				}
     }
 
 		memset( buffer, 0, sizeof( buffer ) );
 
 		n = recvfrom( sockfd, (void *)buffer, TAM, 0, (struct sockaddr *)&dest_addr, &tamano_direccion );
-		/*printf( "Respuesta: %s\n", buffer);*/
 
 		fwrite(buffer, strlen(buffer), 1, file);
 		printf( "Recibido: %d bytes.\n", (int)ftell(file));

@@ -86,10 +86,10 @@ void leer_mensaje(int sockfd, char *cadena){
 	}
 }
 
-void UDP(char *ip){
+void UDP(char *ip, int puerto){
 	printf("La ip es: %s\n", ip);
 	char *comando=malloc(TAM*sizeof(char));
-	sprintf(comando, "./Cliente\\ UDP %s", ip);
+	sprintf(comando, "./Cliente\\ UDP %s %d", ip, puerto);
 	system(comando);
 }
 
@@ -163,7 +163,7 @@ int main( int argc, char *argv[] ) {
 		}
 		else if(!strcmp("ok",buffer)){
 				sleep(1);
-				UDP(ip);
+				UDP(ip, puerto);
 				printf("Llama a función UDP\n");
 		}
 	}

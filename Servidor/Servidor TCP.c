@@ -150,10 +150,10 @@ void leer_mensaje(int newsockfd,  char *cadena){
 	}
 }
 
-void UDP(char *archivo){
+void UDP(int puerto, char *archivo){
 	printf("Función UDP: %s\n", archivo);
 	char *comando=malloc(TAM*sizeof(char));
-	sprintf(comando, "./Servidor\\ UDP \"%s\"", archivo);
+	sprintf(comando, "./Servidor\\ UDP %d \"%s\"", puerto, archivo);
 	system(comando);
 }
 
@@ -254,7 +254,7 @@ int main( int argc, char *argv[] ) {
 				else if(!strncmp("descargar ", buffer, 10)){
 					if (existe_archivo(buffer,archivo)){
 						escribir_mensaje(newsockfd, "ok");
-						UDP(archivo);
+						UDP(puerto, archivo);
 					}
 					else
 						escribir_mensaje(newsockfd, "No existe el archivo");
