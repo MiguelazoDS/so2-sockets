@@ -75,6 +75,16 @@ void leer_mensaje(int sockfd, char *cadena){
 	}
 }
 
+<<<<<<< HEAD
+=======
+void UDP(char *ip){
+	printf("La ip es: %s\n", ip);
+	char *comando=malloc(TAM*sizeof(char));
+	sprintf(comando, "./Cliente\\ UDP %s", ip);
+	system(comando);
+}
+
+>>>>>>> no_headers
 int main( int argc, char *argv[] ) {
 	int sockfd, puerto, terminar = 0, i;
 	struct sockaddr_in serv_addr;
