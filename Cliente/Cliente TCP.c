@@ -5,7 +5,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#include "Cliente UDP.h"
 #define TAM 1024
 
 /*Función utilizada para mandar información por socket.*/

@@ -5,7 +5,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
-#include "Servidor UDP.h"
 #define TAM 1024
 
 /*Función utilizada para leer información recibida.*/
