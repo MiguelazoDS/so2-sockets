@@ -6,7 +6,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <string.h>
-#define TAM 1024
+#define TAM 2048
 
 /*Función utilizada para mandar información por socket.*/
 ssize_t write (int fd, const void *buf, size_t count);

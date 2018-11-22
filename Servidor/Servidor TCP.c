@@ -5,7 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
-#define TAM 1024
+#define TAM 2048
 
 /*Función utilizada para leer información recibida.*/
 ssize_t write (int fd, const void *buf, size_t count);
