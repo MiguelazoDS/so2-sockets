@@ -13,11 +13,10 @@ ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags, struct sockaddr *
 ssize_t sendto(int sockfd, const void *buf, size_t len, int flags, const struct sockaddr *dest_addr, socklen_t addrlen);
 
 int main( int argc, char *argv[] ) {
-	int sockfd, puerto, size;
+	int sockfd, puerto, size, n, contador=1;
 	socklen_t tamano_direccion;
 	char buffer[ TAM ];
 	struct sockaddr_in serv_addr;
-	int n;
 	FILE *file;
 
 	if ( argc < 2 ) {
@@ -64,7 +63,8 @@ int main( int argc, char *argv[] ) {
 		n = sendto( sockfd, (void *)buffer, TAM, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
 		memset( buffer, 0, sizeof( buffer ) );
 
-		while(fread(buffer,TAM,1,file)){
+		while(contador*TAM<size){
+				fread(buffer,TAM,1,file);
         n = sendto( sockfd, (void *)buffer, TAM, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
         if ( n < 0 ) {
             perror( "escritura en socket" );
@@ -72,6 +72,7 @@ int main( int argc, char *argv[] ) {
         }
 				usleep(50);
 				memset( buffer, 0, sizeof( buffer ) );
+				contador++;
     }
 
 		n = sendto( sockfd, (void *)"termine", 7, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
