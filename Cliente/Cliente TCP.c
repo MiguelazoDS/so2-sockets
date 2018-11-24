@@ -162,6 +162,8 @@ int main( int argc, char *argv[] ) {
 		else if(!strcmp("Descargando...",buffer)){
 				sleep(1);
 				UDP(ip, puerto);
+				while (getchar() != EOF && getchar() != '\n')
+						;
 		}
 	}
 return 0;}
