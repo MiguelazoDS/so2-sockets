@@ -5,7 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#define TAM 64
+#define TAM 128
 
 /*Función utilizada para leer información recibida.*/
 ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags, struct sockaddr *src_addr, socklen_t *addrlen);
@@ -14,7 +14,7 @@ ssize_t sendto(int sockfd, const void *buf, size_t len, int flags, const struct 
 
 
 int main( int argc, char *argv[] ) {
-	int sockfd, puerto, n, bucle=1;
+	int sockfd, puerto, n, bucle=1, size;
 	socklen_t tamano_direccion;
 	struct sockaddr_in dest_addr;
 	struct hostent *server;
@@ -46,8 +46,10 @@ int main( int argc, char *argv[] ) {
 		exit( 1 );
 	}
 	n = recvfrom( sockfd, (void *)buffer, TAM, 0, (struct sockaddr *)&dest_addr, &tamano_direccion );
-	file=fopen(buffer,"wb");
 
+	file=fopen(buffer,"wb");
+	n = recvfrom( sockfd, (void *)buffer, TAM, 0, (struct sockaddr *)&dest_addr, &tamano_direccion );
+	size=atoi(buffer);
 	while(bucle){
 				memset( buffer, 0, sizeof( buffer ) );
 
@@ -64,7 +66,7 @@ int main( int argc, char *argv[] ) {
 				}
 				else{
 					fwrite(buffer, TAM, 1, file);
-					printf( "Recibido: %d bytes.\n", (int)ftell(file));
+					printf( "Recibido: %.2f %%.\n", ((double)ftell(file)*100)/size);
 				}
     }
 
@@ -73,8 +75,7 @@ int main( int argc, char *argv[] ) {
 		n = recvfrom( sockfd, (void *)buffer, TAM, 0, (struct sockaddr *)&dest_addr, &tamano_direccion );
 
 		fwrite(buffer, strlen(buffer), 1, file);
-		printf( "Recibido: %d bytes.\n", (int)ftell(file));
-
+		printf( "Recibido: %.2f %%.\n", ((double)ftell(file)*100)/size);
 	fclose(file);
 	return 0;
 }

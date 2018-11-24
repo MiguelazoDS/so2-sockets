@@ -92,7 +92,7 @@ void UDP(char *ip, int puerto){
 }
 
 int main( int argc, char *argv[] ) {
-	int sockfd, puerto, terminar = 0, i;
+	int sockfd, puerto, terminar = 0, i, ch;
 	struct sockaddr_in serv_addr;
 	struct hostent *server;
 	char buffer[TAM];
@@ -162,8 +162,8 @@ int main( int argc, char *argv[] ) {
 		else if(!strcmp("Descargando...",buffer)){
 				sleep(1);
 				UDP(ip, puerto);
-				while (getchar() != EOF && getchar() != '\n')
-						;
+				while ((ch = getchar()) != '\n' && ch != EOF)
+    			;
 		}
 	}
 return 0;}

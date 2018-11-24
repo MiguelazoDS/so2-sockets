@@ -5,7 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
-#define TAM 64
+#define TAM 128
 
 /*Función utilizada para leer información recibida.*/
 ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags, struct sockaddr *src_addr, socklen_t *addrlen);
@@ -60,13 +60,17 @@ int main( int argc, char *argv[] ) {
 		size=ftell(file);
 		fseek(file,0,SEEK_SET);
 		memset( buffer, 0, sizeof( buffer ) );
+		sprintf(buffer, "%d", size);
+		n = sendto( sockfd, (void *)buffer, TAM, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
+		memset( buffer, 0, sizeof( buffer ) );
+
 		while(fread(buffer,TAM,1,file)){
         n = sendto( sockfd, (void *)buffer, TAM, 0, (struct sockaddr *)&serv_addr, tamano_direccion  );
         if ( n < 0 ) {
             perror( "escritura en socket" );
             exit( 1 );
         }
-				usleep(10);
+				usleep(50);
 				memset( buffer, 0, sizeof( buffer ) );
     }
 
